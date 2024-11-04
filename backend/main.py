@@ -33,6 +33,8 @@ templates = Jinja2Templates(directory="frontend/templates")
 def index(request: Request):
     user = request.session.get("user")
     if user:
-        return RedirectResponse("hi")
+        return templates.TemplateResponse(
+            name="index.html", context={"request": request, "user": user}
+        )
 
-    return templates.TemplateResponse(name="home.html", context={"request": request})
+    return templates.TemplateResponse(name="login.html", context={"request": request})

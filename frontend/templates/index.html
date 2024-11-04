@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dark Theme Page with Topbar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 h-screen text-white">
+
+  <!-- Topbar -->
+  <header class="bg-gray-800 shadow-md h-16 flex items-center justify-between px-6">
+    <!-- Left Side (Placeholder for Title or Logo) -->
+    <div class="text-lg font-semibold">
+      TraidingApp
+    </div>
+
+    <!-- Right Side Buttons -->
+    <div class="flex items-center space-x-4">
+      <!-- Button 1 -->
+      <button class="p-2 text-gray-400 hover:text-white focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l3 3m0 0l3-3m-3 3V9m4 13h8a2 2 0 002-2v-5a2 2 0 00-2-2h-4m-4 0H7a2 2 0 00-2 2v5a2 2 0 002 2z" />
+        </svg>
+      </button>
+
+      <!-- Button 2 -->
+      <button class="p-2 text-gray-400 hover:text-white focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0018 14h-1a4 4 0 00-8 0H8a2 2 0 00-1.415.585L5 17h5m6 0v1a2 2 0 01-2 2h-4a2 2 0 01-2-2v-1" />
+        </svg>
+      </button>
+
+      <!-- Button 3 -->
+      <button id="logout_button" class="p-2 text-gray-400 hover:text-white focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+          <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+        </svg>
+      </button>
+      <img class="rounded-3xl hover:cursor-pointer hover:opacity-75 max-w-[50px] max-h-[50px] object-contain" src="{{ user['picture'] }}">
+    </div>
+  </header>
+  <script src="{{ url_for('static', path='/scripts/index_script.js') }}"></script>
+</body>
+</html>
