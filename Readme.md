@@ -15,6 +15,9 @@ GOOGLE_CLIENT_SECRET=<google client secret api key console.cloud.google.com>
 1. Run ```npm install lightweight-charts```
 2. Run ```cp node_modules/lightweight-charts/dist/lightweight-charts.standalone.production.js frontend/static/scripts/```
 
+Documentation:
+https://tradingview.github.io/lightweight-charts/docs?fbclid=IwY2xjawGopxNleHRuA2FlbQIxMAABHQDdsYof3qSFCH6dcjhpJJbBqtUcwg3fwr7EGsEvBalFlGNP4bO58xRIXA_aem_G-8kdsi892YU7uhqaC_xPA
+
 ### Tailwind
 
 1. Run ```npx tailwindcss -i ./frontend/static/css/input.css -o ./frontend/static/css/output.css --watch```
