@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dark Theme Page with Topbar</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{{ url_for('static', path='/css/output.css') }}">
+  <script src="{{ url_for('static', path='/scripts/lightweight-charts.standalone.production.js') }}"></script>
 </head>
 <body class="bg-gray-900 h-screen text-white">
 
@@ -41,6 +42,31 @@
       <img class="rounded-3xl hover:cursor-pointer hover:opacity-75 max-w-[50px] max-h-[50px] object-contain" src="{{ user['picture'] }}">
     </div>
   </header>
-  <script src="{{ url_for('static', path='/scripts/index_script.js') }}"></script>
+  <h1>Stock Price Chart</h1>
+    <div id="chart" style="height: 400px;"></div>
+
+    <script>
+        // Example data passed from FastAPI
+        const data = {{ chart_data|tojson }};
+        const candleData = {{ candle_data|tojson }};
+
+        const chartOptions = { layout: { textColor: 'black', background: { type: 'solid', color: 'white' } } };
+        const chart = LightweightCharts.createChart(document.getElementById('chart'), chartOptions);
+
+        const areaSeries = chart.addAreaSeries({
+            lineColor: '#2962FF', topColor: '#2962FF',
+            bottomColor: 'rgba(41, 98, 255, 0.28)',
+        });
+
+        areaSeries.setData(data);
+        const candlestickSeries = chart.addCandlestickSeries({
+            upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
+            wickUpColor: '#26a69a', wickDownColor: '#ef5350',
+        });
+
+        candlestickSeries.setData(candleData);
+
+        chart.timeScale().fitContent();
+    </script>
 </body>
 </html>
