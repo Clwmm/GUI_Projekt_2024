@@ -46,26 +46,49 @@
     <div id="chart" style="height: 400px;"></div>
 
     <script>
-        // Example data passed from FastAPI
         const data = {{ chart_data|tojson }};
         const candleData = {{ candle_data|tojson }};
 
-        const chartOptions = { layout: { textColor: 'black', background: { type: 'solid', color: 'white' } } };
+        // Dark theme options
+        const chartOptions = {
+            layout: {
+                textColor: 'white', // White text for dark theme
+                background: { type: 'solid', color: '#121212' } // Dark gray background
+            },
+            grid: {
+                vertLines: { color: '#333333', visible: false }, // Subtle or no vertical grid lines
+                horzLines: { color: '#333333', visible: false } // Subtle or no horizontal grid lines
+            },
+            crosshair: {
+                mode: LightweightCharts.CrosshairMode.Normal,
+                vertLine: { color: '#777777', labelBackgroundColor: '#333333' },
+                horzLine: { color: '#777777', labelBackgroundColor: '#333333' }
+            }
+        };
+
         const chart = LightweightCharts.createChart(document.getElementById('chart'), chartOptions);
 
+        // Minimalist area series styling
         const areaSeries = chart.addAreaSeries({
-            lineColor: '#2962FF', topColor: '#2962FF',
-            bottomColor: 'rgba(41, 98, 255, 0.28)',
+            lineColor: '#007bff', // Bright blue line
+            topColor: 'rgba(0, 123, 255, 0.5)', // Transparent blue shading
+            bottomColor: 'rgba(0, 123, 255, 0.1)', // Lighter transparent blue
         });
 
         areaSeries.setData(data);
+
+        // Minimalist candlestick styling
         const candlestickSeries = chart.addCandlestickSeries({
-            upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
-            wickUpColor: '#26a69a', wickDownColor: '#ef5350',
+            upColor: '#4caf50', // Bright green for upward candles
+            downColor: '#f44336', // Bright red for downward candles
+            borderVisible: false,
+            wickUpColor: '#4caf50',
+            wickDownColor: '#f44336',
         });
 
         candlestickSeries.setData(candleData);
 
+        // Automatically fit chart to content
         chart.timeScale().fitContent();
     </script>
 </body>
