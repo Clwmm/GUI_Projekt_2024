@@ -5,9 +5,12 @@ from starlette.middleware.sessions import SessionMiddleware
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
+
+from backend.LiveData import getBtcUsdtPriceChart
 from backend.auth import auth
 import os
 from dotenv import load_dotenv, find_dotenv
+import backend.LiveData
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 load_dotenv(find_dotenv())
@@ -33,18 +36,7 @@ templates = Jinja2Templates(directory="frontend/templates")
 def index(request: Request):
     user = request.session.get("user")
     if user:
-        data = [
-            {"time": '2018-12-22', "value": 32.51},
-            {"time": '2018-12-23', "value": 31.11},
-            {"time": '2018-12-24', "value": 27.02},
-            {"time": '2018-12-25', "value": 27.32},
-            {"time": '2018-12-26', "value": 25.17},
-            {"time": '2018-12-27', "value": 28.89},
-            {"time": '2018-12-28', "value": 25.46},
-            {"time": '2018-12-29', "value": 23.92},
-            {"time": '2018-12-30', "value": 22.68},
-            {"time": '2018-12-31', "value": 22.67},
-        ]
+        data = getBtcUsdtPriceChart()
 
         candle_data = [
             {"time": '2018-12-22', "open": 75.16, "high": 82.84, "low": 36.16, "close": 45.72},
