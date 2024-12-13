@@ -4,19 +4,22 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
-from starlette.responses import RedirectResponse
+from starlette.responses import RedirectResponse, HTMLResponse
 
-from backend.LiveData import getBtcUsdtPriceChart
-from backend.auth import auth
 import os
 from dotenv import load_dotenv, find_dotenv
 import backend.LiveData
 
+# Załaduj plik .env
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 load_dotenv(find_dotenv())
 
+# Konfiguracja FastAPI
 origins = ["http://localhost:20002", "http://127.0.0.1:20002"]
 app = FastAPI()
+
+
+# Middleware
 app.add_middleware(SessionMiddleware, secret_key="add any string...")
 app.add_middleware(
     CORSMiddleware,
@@ -25,19 +28,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Mount statyczne pliki (np. CSS, JS, obrazy)
 app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
 
-app.include_router(auth.router, tags=["auth"])
-
+# Załaduj szablony Jinja2
 templates = Jinja2Templates(directory="frontend/templates")
 
-
+# Przykładowy endpoint dla strony głównej
 @app.get("/")
 def index(request: Request):
     user = request.session.get("user")
     if user:
-        data = getBtcUsdtPriceChart()
-
+        data = backend.LiveData.getBtcUsdtPriceChart()
         candle_data = [
             {"time": '2018-12-22', "open": 75.16, "high": 82.84, "low": 36.16, "close": 45.72},
             {"time": '2018-12-23', "open": 45.12, "high": 53.90, "low": 45.12, "close": 48.09},
@@ -56,3 +59,11 @@ def index(request: Request):
         )
 
     return templates.TemplateResponse(name="login.html", context={"request": request})
+
+@app.get("/admin")
+def admin_dashboard(request: Request):
+    user = request.session.get("user")
+    if user:
+        return templates.TemplateResponse("admin_dashboard.html", context={"request": request, "user": user})
+
+    return templates.TemplateResponse("admin_dashboard.html", context={"request": request, "user": user})
