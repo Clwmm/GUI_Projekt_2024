@@ -6,6 +6,9 @@ from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 from starlette.responses import RedirectResponse, HTMLResponse
 #from backend.routes.api_routes import router
+from backend.database.connection import mongo_instance
+from backend.models.transaction import Transaction
+from backend.schema.schemas import list_serial
 
 from backend.auth import auth
 
@@ -81,3 +84,16 @@ def admin_dashboard(request: Request):
         return templates.TemplateResponse("index.html", context={"request": request, "user": user})
 
     return templates.TemplateResponse("index.html", context={"request": request, "user": user})
+
+
+@app.get("/test")
+def conn_test(request: Request):
+    collection = mongo_instance.collection
+
+    all = list_serial(collection.find())
+    return all
+
+@app.post("/test")
+async def conn_add_test(item: Transaction):
+    collection = mongo_instance.collection
+    collection.insert_one(dict(item))
