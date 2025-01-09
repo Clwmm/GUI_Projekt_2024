@@ -6,7 +6,6 @@
   <title>Advanced Crypto Trading Dashboard</title>
   <link rel="stylesheet" href="{{ url_for('static', path='/css/output.css') }}">
   <script src="{{ url_for('static', path='/scripts/lightweight-charts.standalone.production.js') }}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <style>
     .chart-container {
       position: relative;
@@ -64,10 +63,7 @@
       </div>
 
       <button id="logout_button" class="text-gray-400 hover:text-white p-2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
-          <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
-        </svg>
+        <!-- Logout Icon -->
       </button>
       <img class="rounded-full w-12 h-12 object-cover hover:cursor-pointer hover:opacity-75" src="{{ user['picture'] }}" alt="Profile">
     </div>
@@ -112,73 +108,36 @@
   </main>
 
   <script>
-    const btcPrice = 35000;
-    const ethPrice = 2500;
-    const xrpPrice = 0.8;
-
-    setInterval(() => {
-      document.getElementById('btc-price').textContent = (btcPrice + (Math.random() - 0.5) * 500).toFixed(2);
-      document.getElementById('eth-price').textContent = (ethPrice + (Math.random() - 0.5) * 50).toFixed(2);
-      document.getElementById('xrp-price').textContent = (xrpPrice + (Math.random() - 0.5) * 0.1).toFixed(2);
-    }, 5000);
-    const btcData = [
-      { time: 1662144000, open: 40000, high: 40500, low: 39500, close: 39800 },
-      { time: 1662147600, open: 39800, high: 40000, low: 39200, close: 39600 },
-      { time: 1662151200, open: 39600, high: 40200, low: 39000, close: 39800 },
-      { time: 1662154800, open: 39800, high: 40000, low: 39050, close: 39500 },
-      { time: 1662158400, open: 39500, high: 39800, low: 38900, close: 39200 },
-      { time: 1662162000, open: 39200, high: 39500, low: 38800, close: 39100 },
-      { time: 1662165600, open: 39100, high: 39400, low: 38800, close: 39150 },
-    ];
-
-    const ethData = [
-      { time: 1662144000, open: 2500, high: 2550, low: 2450, close: 2520 },
-      { time: 1662147600, open: 2520, high: 2540, low: 2450, close: 2490 },
-      { time: 1662151200, open: 2490, high: 2530, low: 2440, close: 2510 },
-      { time: 1662154800, open: 2510, high: 2530, low: 2470, close: 2500 },
-      { time: 1662158400, open: 2500, high: 2530, low: 2460, close: 2495 },
-      { time: 1662162000, open: 2495, high: 2520, low: 2450, close: 2480 },
-      { time: 1662165600, open: 2480, high: 2520, low: 2440, close: 2490 },
-    ];
-
-    const btcChart = LightweightCharts.createChart(document.getElementById('btc-chart'), {
-      layout: { textColor: 'white', background: { type: 'solid', color: '#121212' } },
-      grid: { vertLines: { color: '#333333' }, horzLines: { color: '#333333' } },
-      crosshair: { mode: LightweightCharts.CrosshairMode.Normal, vertLine: { color: '#777777' }, horzLine: { color: '#777777' } }
-    });
-
-    const btcSeries = btcChart.addCandlestickSeries({
-      upColor: '#4caf50',
-      downColor: '#f44336',
-      borderVisible: false,
-      wickUpColor: '#4caf50',
-      wickDownColor: '#f44336',
-    });
-    btcSeries.setData(btcData);
-
-    const ethChart = LightweightCharts.createChart(document.getElementById('eth-chart'), {
-      layout: { textColor: 'white', background: { type: 'solid', color: '#121212' } },
-      grid: { vertLines: { color: '#333333' }, horzLines: { color: '#333333' } },
-      crosshair: { mode: LightweightCharts.CrosshairMode.Normal, vertLine: { color: '#777777' }, horzLine: { color: '#777777' } }
-    });
-
-    const ethSeries = ethChart.addCandlestickSeries({
-      upColor: '#28a745',
-      downColor: '#f44336',
-      borderVisible: false,
-      wickUpColor: '#28a745',
-      wickDownColor: '#f44336',
-    });
-    ethSeries.setData(ethData);
-
-    document.getElementById('confirm-transaction').addEventListener('click', () => {
+    document.getElementById('confirm-transaction').addEventListener('click', async () => {
       const amount = document.getElementById('transaction-amount').value;
       const type = document.getElementById('transaction-type').value;
-      if (amount <= 0) {
+
+      if (!amount || amount <= 0) {
         alert('Please enter a valid amount.');
         return;
       }
-      alert(`Transaction confirmed: ${type} ${amount} units`);
+
+      try {
+        const response = await fetch('/api/transactions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            amount: parseFloat(amount),
+            transaction_type: type,
+            currency: 'USDT', // Example
+            user_id: 123 // Replace with dynamic ID
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.detail || 'Transaction failed');
+        }
+
+        alert('Transaction confirmed successfully.');
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      }
     });
   </script>
 

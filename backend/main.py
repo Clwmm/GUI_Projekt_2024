@@ -5,6 +5,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 from starlette.responses import RedirectResponse, HTMLResponse
+#from backend.routes.api_routes import router
 
 import os
 from dotenv import load_dotenv, find_dotenv
@@ -18,7 +19,7 @@ load_dotenv(find_dotenv())
 origins = ["http://localhost:20002", "http://127.0.0.1:20002"]
 app = FastAPI()
 
-
+#app.include_router(router, prefix="/api")
 # Middleware
 app.add_middleware(SessionMiddleware, secret_key="add any string...")
 app.add_middleware(
@@ -67,3 +68,12 @@ def admin_dashboard(request: Request):
         return templates.TemplateResponse("admin_dashboard.html", context={"request": request, "user": user})
 
     return templates.TemplateResponse("admin_dashboard.html", context={"request": request, "user": user})
+
+
+@app.get("/home")
+def admin_dashboard(request: Request):
+    user = request.session.get("user")
+    if user:
+        return templates.TemplateResponse("index.html", context={"request": request, "user": user})
+
+    return templates.TemplateResponse("index.html", context={"request": request, "user": user})
