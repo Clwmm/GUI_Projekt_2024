@@ -7,9 +7,11 @@ from starlette.requests import Request
 from starlette.responses import RedirectResponse, HTMLResponse
 #from backend.routes.api_routes import router
 
+from backend.auth import auth
+
 import os
 from dotenv import load_dotenv, find_dotenv
-import backend.LiveData
+from backend.LiveData import getBtcUsdtPriceChart
 
 # Załaduj plik .env
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -30,6 +32,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth.router, tags=["auth"])
+
 # Mount statyczne pliki (np. CSS, JS, obrazy)
 app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
 
@@ -41,7 +45,7 @@ templates = Jinja2Templates(directory="frontend/templates")
 def index(request: Request):
     user = request.session.get("user")
     if user:
-        data = backend.LiveData.getBtcUsdtPriceChart()
+        data = getBtcUsdtPriceChart()
         candle_data = [
             {"time": '2018-12-22', "open": 75.16, "high": 82.84, "low": 36.16, "close": 45.72},
             {"time": '2018-12-23', "open": 45.12, "high": 53.90, "low": 45.12, "close": 48.09},
