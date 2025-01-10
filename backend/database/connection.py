@@ -40,11 +40,9 @@ coins_collection = mongo_instance.get_coins_collection()
 new_coin_1 = Coin(name="usd")
 new_coin_2 = Coin(name="eth")
 new_coin_3 = Coin(name="btc")
-new_coin_4 = Coin(name="sol")
 coins_collection.insert_one(new_coin_1.dict())
 coins_collection.insert_one(new_coin_2.dict())
 coins_collection.insert_one(new_coin_3.dict())
-coins_collection.insert_one(new_coin_4.dict())
 
 
 try:

@@ -3,9 +3,21 @@ import pandas as pd
 import time as time
 from pycoingecko import CoinGeckoAPI
 
+print("Connecting to CoinGeckAPI..")
 cg = CoinGeckoAPI()
 print(cg.ping())
 
+def getPrice(coin_id, vs_currency):
+    from_ = coin_id
+    if from_ == "btc":
+        from_ = "bitcoin"
+    if from_ == "eth":
+        from_ = "ethereum"
+    print(from_)
+    price = cg.get_price(ids=from_, vs_currencies=vs_currency)
+    price = next(iter(next(iter(price.values())).values()))
+
+    return price
 
 def getPairPriceChart(coin_id, vs_currency):
     current_date = datetime.now()
