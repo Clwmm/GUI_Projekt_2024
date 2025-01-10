@@ -1,9 +1,10 @@
 def individual_serial(item) -> dict:
     return {
-        "user_id": item["user_id"],
-        "currency": item["currency"],
-        "amount": item["amount"],
-        "transaction_type": item["transaction_type"],
+        "transaction_id": item["transaction_id"],
+        "currency_from": item["currency_from"],
+        "currency_to": item["currency_to"],
+        "amount_from": item["amount_from"],
+        "amount_to": item["amount_to"],
         "timestamp": item["timestamp"],
     }
 
