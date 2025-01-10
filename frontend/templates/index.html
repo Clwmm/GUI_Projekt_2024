@@ -63,7 +63,6 @@
       </div>
 
       <button id="logout_button" class="text-gray-400 hover:text-white p-2">
-        <!-- Logout Icon -->
       </button>
       <img class="rounded-full w-12 h-12 object-cover hover:cursor-pointer hover:opacity-75" src="{{ user['picture'] }}" alt="Profile">
     </div>
@@ -88,7 +87,6 @@
         <div id="prices" class="flex justify-between items-center">
           <div class="text-white">BTC/USDT: <span id="btc-price">--</span></div>
           <div class="text-white">ETH/USDT: <span id="eth-price">--</span></div>
-          <div class="text-white">XRP/USDT: <span id="xrp-price">--</span></div>
         </div>
       </div>
 
@@ -104,42 +102,7 @@
         <button id="confirm-transaction" class="glossy-button w-full">Confirm Transaction</button>
       </div>
     </section>
-
   </main>
-
-  <script>
-    document.getElementById('confirm-transaction').addEventListener('click', async () => {
-      const amount = document.getElementById('transaction-amount').value;
-      const type = document.getElementById('transaction-type').value;
-
-      if (!amount || amount <= 0) {
-        alert('Please enter a valid amount.');
-        return;
-      }
-
-      try {
-        const response = await fetch('/api/transactions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            amount: parseFloat(amount),
-            transaction_type: type,
-            currency: 'USDT', // Example
-            user_id: 123 // Replace with dynamic ID
-          })
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.detail || 'Transaction failed');
-        }
-
-        alert('Transaction confirmed successfully.');
-      } catch (error) {
-        alert(`Error: ${error.message}`);
-      }
-    });
-  </script>
-
+<script src="../static/scripts/index_script.js"></script>
 </body>
 </html>

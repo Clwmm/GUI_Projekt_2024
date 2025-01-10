@@ -1,37 +1,51 @@
-document.getElementById("logout_button").addEventListener("click", function() {
-            window.location.href = "/logout"
+async function fetchChartData(p_from, p_to) {
+      try {
+        const response = await fetch('http://localhost:8000/chart', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ p_from, p_to }),
         });
 
-function initChart(containerId, data, candleData) {
-    const chartOptions = { layout: { textColor: 'black', background: { type: 'solid', color: 'white' } } };
-    const chart = createChart(document.getElementById(containerId), chartOptions);
-    // const chart = LightweightCharts.createChart(document.getElementById(containerId), {
-    //     width: 600,
-    //     height: 400,
-    //     layout: {
-    //         backgroundColor: '#ffffff',
-    //         textColor: '#000',
-    //     },
-    //     grid: {
-    //         vertLines: { color: '#eee' },
-    //         horzLines: { color: '#eee' },
-    //     },
-    // });
-    // const lineSeries = chart.addLineSeries();
-    // lineSeries.setData(data);
+        if (!response.ok) {
+          throw new Error('Failed to fetch chart data');
+        }
 
-    const areaSeries = chart.addAreaSeries({
-        lineColor: '#2962FF', topColor: '#2962FF',
-        bottomColor: 'rgba(41, 98, 255, 0.28)',
+        const data = await response.json();
+        return data.map(item => ({ time: item.time, value: item.value }));
+      } catch (error) {
+        console.error('Error fetching chart data:', error);
+        return [];
+      }
+    }
+
+    function createChart(containerId, chartData, currencyPair) {
+      const container = document.getElementById(containerId);
+      const chart = LightweightCharts.createChart(container, {
+        width: container.offsetWidth,
+        height: container.offsetHeight,
+        layout: {
+          backgroundColor: '#1f2937',
+          textColor: '#d1d5db',
+        },
+        grid: {
+          vertLines: { color: '#2d3748' },
+          horzLines: { color: '#2d3748' },
+        },
+      });
+
+      const series = chart.addLineSeries({
+        color: '#00b5ad',
+        lineWidth: 2,
+      });
+
+      series.setData(chartData);
+      chart.timeScale().fitContent();
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const btcData = await fetchChartData('usd', 'btc');
+      createChart('btc-chart', btcData, 'BTC/USDT');
+
+      const ethData = await fetchChartData('usd', 'eth');
+      createChart('eth-chart', ethData, 'ETH/USDT');
     });
-
-    areaSeries.setData(data);
-    const candlestickSeries = chart.addCandlestickSeries({
-        upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
-        wickUpColor: '#26a69a', wickDownColor: '#ef5350',
-    });
-
-    candlestickSeries.setData(candleData);
-
-    chart.timeScale().fitContent();
-}
