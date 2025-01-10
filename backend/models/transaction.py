@@ -1,16 +1,27 @@
+from bson import ObjectId
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List
 from datetime import datetime
+
+class PydanticObjectId(ObjectId):
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.validate
+
+    @classmethod
+    def validate(cls, v, field=None):
+        if not isinstance(v, ObjectId):
+            raise TypeError("ObjectId required")
+        return str(v)
 
 class User(BaseModel):
     email: EmailStr = Field(..., unique=True)
 
 class UserToTransaction(BaseModel):
-    user_id: int
+    user_id: PydanticObjectId
     transaction_id: int
 
 class Transaction(BaseModel):
-    transaction_id: int = Field(..., unique=True)
     currency_from: str
     currency_to: str
     amount_from: float
@@ -18,10 +29,13 @@ class Transaction(BaseModel):
     timestamp: datetime
 
 class CoinToUser(BaseModel):
-    user_id: int
-    coin_id: int
+    user_id: PydanticObjectId
+    coin_id: PydanticObjectId
     amount: float
 
 class Coin(BaseModel):
-    coin_id: int = Field(..., unique=True)
     name: str
+
+class Pair(BaseModel):
+    p_from: str
+    p_to: str

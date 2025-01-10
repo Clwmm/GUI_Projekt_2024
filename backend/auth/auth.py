@@ -7,6 +7,8 @@ from authlib.integrations.starlette_client import OAuth, OAuthError
 from fastapi.staticfiles import StaticFiles
 from fastapi import APIRouter
 from dotenv import load_dotenv, find_dotenv
+from backend.database.connection import mongo_instance, coins_collection
+from backend.models.transaction import User, CoinToUser
 import os
 
 load_dotenv(find_dotenv())
@@ -46,7 +48,23 @@ async def auth(request: Request):
         )
     user = token.get("userinfo")
     if user:
+        try:
+            users_collection = mongo_instance.get_users_collection()
+            coins_collection = mongo_instance.get_coins_collection()
+            coin_to_user_collection = mongo_instance.get_coin_to_user_collection()
+            existing_user = users_collection.find_one({"email": user["email"]})
+            if not existing_user:
+                new_user = User(email=user["email"])
+                inserted_user = users_collection.insert_one(new_user.dict())
+                coin = coins_collection.find_one({"name": "usd"})
+
+                newCoinToUser = CoinToUser(user_id=inserted_user.inserted_id, coin_id=coin["_id"], amount=60.0)
+                coin_to_user_collection.insert_one(newCoinToUser.dict())
+
+        except OAuthError as e:
+            print(e)
         request.session["user"] = dict(user)
+
     return RedirectResponse("/")
 
 
