@@ -19,7 +19,7 @@ class User(BaseModel):
 
 class UserToTransaction(BaseModel):
     user_id: PydanticObjectId
-    transaction_id: int
+    transaction_id: PydanticObjectId
 
 class Transaction(BaseModel):
     currency_from: str
@@ -39,3 +39,8 @@ class Coin(BaseModel):
 class Pair(BaseModel):
     p_from: str
     p_to: str
+
+class BodyTransaction(BaseModel):
+    t_from: str
+    t_to: str
+    amount_from: float
