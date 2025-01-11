@@ -81,8 +81,8 @@ def get_pairs(request: Request):
         return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
     return {
-        "usd/btc",
-        "usd/eth"
+        "btc/usd",
+        "eth/usd"
     }
 
 @app.post("/chart")

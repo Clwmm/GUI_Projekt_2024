@@ -22,6 +22,12 @@ def getPrice(coin_id, vs_currency):
 def getPairPriceChart(coin_id, vs_currency):
     current_date = datetime.now()
 
+    from_ = coin_id
+    if from_ == "btc":
+        from_ = "bitcoin"
+    if from_ == "eth":
+        from_ = "ethereum"
+
     date_one_year_ago = current_date - timedelta(days=363)
 
     current_date_str = current_date.strftime("%Y-%m-%d")
@@ -32,7 +38,7 @@ def getPairPriceChart(coin_id, vs_currency):
 
     try:
         data = cg.get_coin_market_chart_range_by_id(
-            id=coin_id,
+            id=from_,
             vs_currency=vs_currency,
             from_timestamp=from_timestamp,
             to_timestamp=to_timestamp,
