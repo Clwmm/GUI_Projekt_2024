@@ -48,61 +48,72 @@
     .half-width {
       width: 48%;
     }
+
+    .scrollbar {
+      background-color: #1f2937;
+      color: #d1d5db;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      max-width: 300px;
+    }
   </style>
 </head>
 <body class="bg-gray-900 h-screen text-white">
 
-  <header class="bg-gray-800 shadow-lg h-24 flex items-center justify-between px-8 border-b border-gray-700">
-    <div class="text-3xl font-semibold text-white">
-      CryptoTradingApp
+<header class="bg-gray-800 shadow-lg h-24 flex items-center justify-between px-8 border-b border-gray-700">
+  <div class="text-3xl font-semibold text-white">
+    CryptoTradingApp
+  </div>
+  <div class="flex items-center space-x-6">
+    <div class="text-sm text-gray-400">
+      <div>Wallet ID: <span class="text-white">{{ user['wallet_id'] }}</span></div>
+      <div>Balance: <span class="text-white">{{ user['balance'] }} USD</span></div>
     </div>
-    <div class="flex items-center space-x-6">
-      <div class="text-sm text-gray-400">
-        <div>Wallet ID: <span class="text-white">{{ user['wallet_id'] }}</span></div>
-        <div>Balance: <span class="text-white">{{ user['balance'] }} USD</span></div>
-      </div>
 
-      <button id="logout_button" class="text-gray-400 hover:text-white p-2">
-      </button>
-      <img class="rounded-full w-12 h-12 object-cover hover:cursor-pointer hover:opacity-75" src="{{ user['picture'] }}" alt="Profile">
+    <button id="logout_button" class="text-gray-400 hover:text-white p-2">
+    </button>
+    <img class="rounded-full w-12 h-12 object-cover hover:cursor-pointer hover:opacity-75" src="{{ user['picture'] }}" alt="Profile">
+  </div>
+</header>
+
+<main class="p-8 space-y-8">
+
+  <section class="fade-in">
+    <div class="scrollbar">
+      <label for="pair-selector">Select Pair:</label>
+      <select id="pair-selector" class="bg-gray-700 text-white p-3 rounded-md w-full">
+        <!-- Options will be dynamically populated -->
+      </select>
     </div>
-  </header>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+      <h2 id="chart-title" class="text-2xl font-semibold text-white mb-4">Selected Pair</h2>
+      <div id="crypto-chart" class="chart-container"></div>
+    </div>
+  </section>
 
-  <main class="p-8 space-y-8">
+  <section class="fade-in flex-container">
+    <div class="half-width bg-gray-800 p-6 rounded-lg shadow-lg">
+      <div class="text-2xl font-semibold text-white mb-4">Live Cryptocurrency Prices</div>
+      <div id="prices" class="flex justify-between items-center">
+        <div class="text-white">BTC/USDT: <span id="btc-price">--</span></div>
+        <div class="text-white">ETH/USDT: <span id="eth-price">--</span></div>
+      </div>
+    </div>
 
-    <section class="grid grid-cols-2 gap-6 fade-in">
-      <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-semibold text-white mb-4">BTC/USDT</h2>
-        <div id="btc-chart" class="chart-container"></div>
+    <div class="half-width bg-gray-800 p-6 rounded-lg shadow-lg">
+      <div class="text-2xl font-semibold text-white mb-4">Make a Transaction</div>
+      <div class="flex items-center space-x-4 mb-4">
+        <input type="number" id="transaction-amount" placeholder="Amount" class="bg-gray-700 text-white p-3 rounded-md w-full"/>
+        <select id="transaction-type" class="bg-gray-700 text-white p-3 rounded-md w-32">
+          <option value="buy">Buy</option>
+          <option value="sell">Sell</option>
+        </select>
       </div>
-      <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-semibold text-white mb-4">ETH/USDT</h2>
-        <div id="eth-chart" class="chart-container"></div>
-      </div>
-    </section>
-
-    <section class="fade-in flex-container">
-      <div class="half-width bg-gray-800 p-6 rounded-lg shadow-lg">
-        <div class="text-2xl font-semibold text-white mb-4">Live Cryptocurrency Prices</div>
-        <div id="prices" class="flex justify-between items-center">
-          <div class="text-white">BTC/USDT: <span id="btc-price">--</span></div>
-          <div class="text-white">ETH/USDT: <span id="eth-price">--</span></div>
-        </div>
-      </div>
-
-      <div class="half-width bg-gray-800 p-6 rounded-lg shadow-lg">
-        <div class="text-2xl font-semibold text-white mb-4">Make a Transaction</div>
-        <div class="flex items-center space-x-4 mb-4">
-          <input type="number" id="transaction-amount" placeholder="Amount" class="bg-gray-700 text-white p-3 rounded-md w-full"/>
-          <select id="transaction-type" class="bg-gray-700 text-white p-3 rounded-md w-32">
-            <option value="buy">Buy</option>
-            <option value="sell">Sell</option>
-          </select>
-        </div>
-        <button id="confirm-transaction" class="glossy-button w-full">Confirm Transaction</button>
-      </div>
-    </section>
-  </main>
+      <button id="confirm-transaction" class="glossy-button w-full">Confirm Transaction</button>
+    </div>
+  </section>
+</main>
 <script src="../static/scripts/index_script.js"></script>
 </body>
 </html>
