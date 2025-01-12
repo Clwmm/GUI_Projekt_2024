@@ -239,16 +239,3 @@ async def create_transaction(request: Request, body: BodyTransaction):
     except Exception as e:
         print(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-@app.get("/test")
-def conn_test(request: Request):
-    collection = mongo_instance.collection
-
-    all = list_serial(collection.find())
-    return all
-
-@app.post("/test")
-async def conn_add_test(item: Transaction):
-    collection = mongo_instance.collection
-    collection.insert_one(dict(item))
