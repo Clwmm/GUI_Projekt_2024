@@ -4,18 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Advanced Crypto Trading Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/flowbite@1.7.0/dist/flowbite.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', path='/css/output.css') }}">
   <script src="{{ url_for('static', path='/scripts/lightweight-charts.standalone.production.js') }}"></script>
   <style>
+    body {
+      background-color: #121828;
+      color: #e5e7eb;
+      font-family: 'Inter', sans-serif;
+    }
+
     .chart-container {
       position: relative;
       width: 100%;
-      height: 400px;
-      border-radius: 10px;
+      height: 500px;
+      border-radius: 12px;
+      background-color: #1f2937;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7);
     }
 
     .fade-in {
-      animation: fadeIn 0.5s ease-in;
+      animation: fadeIn 0.8s ease-in-out;
     }
 
     @keyframes fadeIn {
@@ -24,25 +33,24 @@
     }
 
     .glossy-button {
-      background-color: #1f2937;
-      border: none;
+      background-color: #2d3748;
       color: white;
-      padding: 12px 25px;
-      font-size: 16px;
-      border-radius: 8px;
+      padding: 14px 28px;
+      font-size: 18px;
+      border-radius: 10px;
       cursor: pointer;
       transition: all 0.3s ease;
     }
 
     .glossy-button:hover {
-      background-color: #3b3f46;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+      background-color: #4a5568;
+      box-shadow: 0 6px 12px rgba(255, 255, 255, 0.2);
     }
 
     .flex-container {
       display: flex;
       justify-content: space-between;
-      gap: 16px;
+      gap: 24px;
     }
 
     .half-width {
@@ -50,70 +58,179 @@
     }
 
     .scrollbar {
-      background-color: #1f2937;
+      background-color: #2d3748;
       color: #d1d5db;
-      padding: 12px;
+      padding: 16px;
       border-radius: 8px;
-      margin-bottom: 16px;
-      max-width: 300px;
+      margin-bottom: 24px;
+      max-width: 320px;
+    }
+
+    .price-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .price-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    #prices {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    #prices::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    #prices::-webkit-scrollbar-track {
+      background: #2d3748;
+      border-radius: 6px;
+    }
+
+    #prices::-webkit-scrollbar-thumb {
+      background: #4a5568;
+      border-radius: 6px;
+    }
+
+    #prices::-webkit-scrollbar-thumb:hover {
+      background: #718096;
+    }
+
+    /* Header Styling */
+    header {
+      background-color: #2d3748;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+    }
+
+    header .text-3xl {
+      font-size: 1.875rem;
+      font-weight: 600;
+    }
+
+    .header-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .header-info div {
+      margin: 4px 0;
+    }
+
+    .header-info .text-white {
+      font-weight: bold;
+    }
+
+    .profile-img {
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      object-fit: cover;
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
+
+    .profile-img:hover {
+      opacity: 0.8;
     }
   </style>
 </head>
-<body class="bg-gray-900 h-screen text-white">
+<body>
 
 <header class="bg-gray-800 shadow-lg h-24 flex items-center justify-between px-8 border-b border-gray-700">
   <div class="text-3xl font-semibold text-white">
     CryptoTradingApp
   </div>
-  <div class="flex items-center space-x-6">
-    <div class="text-sm text-gray-400">
-      <div>Wallet ID: <span class="text-white">{{ user['wallet_id'] }}</span></div>
-      <div>Balance: <span class="text-white">{{ user['balance'] }} USD</span></div>
-    </div>
-
-    <button id="logout_button" class="text-gray-400 hover:text-white p-2">
-    </button>
-    <img class="rounded-full w-12 h-12 object-cover hover:cursor-pointer hover:opacity-75" src="{{ user['picture'] }}" alt="Profile">
+  <div class="header-info text-gray-400">
+    <div>Wallet ID: <span class="text-white">{{ user['wallet_id'] }}</span></div>
+    <div>Balance: <span class="text-white">{{ user['balance'] }} USD</span></div>
   </div>
+
+  <button id="logout_button" class="text-gray-400 hover:text-white p-2"></button>
+  <img class="profile-img hover:opacity-80" src="{{ user['picture'] }}" alt="Profile">
 </header>
 
-<main class="p-8 space-y-8">
+<main class="p-10 space-y-10">
 
   <section class="fade-in">
     <div class="scrollbar">
-      <label for="pair-selector">Select Pair:</label>
-      <select id="pair-selector" class="bg-gray-700 text-white p-3 rounded-md w-full">
-        <!-- Options will be dynamically populated -->
+      <label for="pair-selector" class="block text-lg font-semibold">Select Pair:</label>
+      <select id="pair-selector" class="bg-gray-700 text-white p-4 rounded-md w-full focus:ring-2 focus:ring-indigo-500">
       </select>
     </div>
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-      <h2 id="chart-title" class="text-2xl font-semibold text-white mb-4">Selected Pair</h2>
+    <div class="bg-gray-800 p-8 rounded-lg shadow-xl">
+      <h2 id="chart-title" class="text-3xl font-semibold text-white mb-6">Selected Pair</h2>
       <div id="crypto-chart" class="chart-container"></div>
     </div>
   </section>
 
   <section class="fade-in flex-container">
-    <div class="half-width bg-gray-800 p-6 rounded-lg shadow-lg">
-      <div class="text-2xl font-semibold text-white mb-4">Live Cryptocurrency Prices</div>
-      <div id="prices" class="flex justify-between items-center">
-        <div class="text-white">BTC/USDT: <span id="btc-price">--</span></div>
-        <div class="text-white">ETH/USDT: <span id="eth-price">--</span></div>
+    <div class="half-width bg-gray-800 p-8 rounded-lg shadow-xl">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-semibold text-white">Make a Transaction</h2>
+        <div class="bg-indigo-600 px-3 py-1 rounded-full text-sm text-white">Live</div>
+      </div>
+
+      <div class="space-y-6">
+        <div class="flex flex-col space-y-2">
+          <label class="text-sm text-gray-400">Transaction Type</label>
+          <select id="transaction-type"
+                  class="bg-gray-700 text-white p-4 rounded-lg w-full border border-gray-600 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200">
+            <option value="buy">Buy</option>
+            <option value="sell">Sell</option>
+          </select>
+        </div>
+        <div class="flex flex-col space-y-2">
+          <label class="text-sm text-gray-400">Select Coin</label>
+          <select id="transaction-coin"
+                  class="bg-gray-700 text-white p-4 rounded-lg w-full border border-gray-600 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200">
+          </select>
+        </div>
+        <div class="flex flex-col space-y-2">
+          <label class="text-sm text-gray-400">Amount</label>
+          <div class="relative">
+            <input type="number"
+                   id="transaction-amount"
+                   placeholder="0.00"
+                   class="bg-gray-700 text-white p-4 rounded-lg w-full border border-gray-600 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"/>
+            <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400">USD</span>
+          </div>
+        </div>
+        <button id="confirm-transaction"
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-4 px-6 rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          <span>Confirm Transaction</span>
+        </button>
       </div>
     </div>
-
-    <div class="half-width bg-gray-800 p-6 rounded-lg shadow-lg">
-      <div class="text-2xl font-semibold text-white mb-4">Make a Transaction</div>
-      <div class="flex items-center space-x-4 mb-4">
-        <input type="number" id="transaction-amount" placeholder="Amount" class="bg-gray-700 text-white p-3 rounded-md w-full"/>
-        <select id="transaction-type" class="bg-gray-700 text-white p-3 rounded-md w-32">
-          <option value="buy">Buy</option>
-          <option value="sell">Sell</option>
-        </select>
+    <div class="half-width bg-gray-800 p-8 rounded-lg shadow-xl">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-semibold text-white">Your Portfolio</h2>
+        <button class="text-gray-400 hover:text-white transition-colors duration-200">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+        </button>
       </div>
-      <button id="confirm-transaction" class="glossy-button w-full">Confirm Transaction</button>
+
+      <div id="coins-container" class="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+      </div>
     </div>
   </section>
 </main>
+
 <script src="../static/scripts/index_script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flowbite@1.7.0/dist/flowbite.js"></script>
 </body>
 </html>
