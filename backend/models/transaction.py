@@ -18,6 +18,9 @@ class User(BaseModel):
     email: EmailStr = Field(..., unique=True)
     banned: bool
 
+class UserEmail(BaseModel):
+    email: str
+
 class UserToTransaction(BaseModel):
     user_id: PydanticObjectId
     transaction_id: PydanticObjectId
