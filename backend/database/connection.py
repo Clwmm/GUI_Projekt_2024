@@ -42,6 +42,13 @@ print("Starting MongoDB instance...")
 mongo_instance = MongoDB(MONGO_URI, DB_NAME)
 print("\tSuccessfully created MongoDB instance!")
 
+try:
+    print("Connecting to DB...")
+    mongo_instance.client.admin.command('ping')
+    print("\tSuccessfully connected to DB!")
+except Exception as e:
+    print("Connetction Error: ", e)
+
 coins_collection = mongo_instance.get_coins_collection()
 new_coin_1 = Coin(name="usd")
 new_coin_2 = Coin(name="eth")
@@ -53,11 +60,3 @@ coins_collection.insert_one(new_coin_3.dict())
 admin_collection = mongo_instance.get_admin_collection()
 new_admin = Admin(email=ADMIN_EMAIL)
 admin_collection.insert_one(new_admin.dict())
-
-
-try:
-    print("Connecting to DB...")
-    mongo_instance.client.admin.command('ping')
-    print("\tSuccessfully connected to DB!")
-except Exception as e:
-    print("Connetction Error: ", e)
