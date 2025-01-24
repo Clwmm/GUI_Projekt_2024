@@ -88,34 +88,6 @@ function createCoinElement(coin) {
   return coinDiv;
 }
 
-
-let transactionType = 'buy';
-
-
-function updateTransactionType(type) {
-  transactionType = type;
-  console.log(`Transaction Type changed to: ${transactionType}`); // Log do debugowania
-
-
-  const buyButton = document.getElementById("buy-button");
-  const sellButton = document.getElementById("sell-button");
-
-  if (type === "buy") {
-    buyButton.classList.add("ring-4", "ring-green-400");
-    sellButton.classList.remove("ring-4", "ring-red-400");
-  } else if (type === "sell") {
-    sellButton.classList.add("ring-4", "ring-red-400");
-    buyButton.classList.remove("ring-4", "ring-green-400");
-  }
-}
-
-
-const buyButton = document.getElementById("buy-button");
-const sellButton = document.getElementById("sell-button");
-
-buyButton.addEventListener("click", () => updateTransactionType("buy"));
-sellButton.addEventListener("click", () => updateTransactionType("sell"));
-
 document.addEventListener('DOMContentLoaded', async () => {
   const pairs = await fetchPairs();
   const pairSelector = document.getElementById('pair-selector');
@@ -138,23 +110,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('chart-title').textContent = `Chart: ${event.target.value.toUpperCase()}`;
   });
 
-  const transactionCoinSelector = document.getElementById('transaction-coin');
-  pairs.forEach(pair => {
-    const [from, to] = pair.split('/');
-    if (from.toLowerCase() !== 'usd') {
-      const option1 = document.createElement('option');
-      option1.value = from;
-      option1.textContent = from.toUpperCase();
-      transactionCoinSelector.appendChild(option1);
-    }
-    if (to.toLowerCase() !== 'usd') {
-      const option2 = document.createElement('option');
-      option2.value = to;
-      option2.textContent = to.toUpperCase();
-      transactionCoinSelector.appendChild(option2);
-    }
-  });
-
   const coins = await fetchCoins();
   const coinsContainer = document.getElementById('coins-container');
   coinsContainer.innerHTML = '';
@@ -162,8 +117,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     coinsContainer.appendChild(createCoinElement(coin));
   });
 
+  let transactionType = "";
+  function updateTransactionType(type) {
+    transactionType = type;
+
+    const buyButton = document.getElementById("buy-button");
+    const sellButton = document.getElementById("sell-button");
+
+    if (type === "buy") {
+      buyButton.classList.add("ring-4", "ring-green-400");
+      sellButton.classList.remove("ring-4", "ring-red-400");
+    } else if (type === "sell") {
+      sellButton.classList.add("ring-4", "ring-red-400");
+      buyButton.classList.remove("ring-4", "ring-green-400");
+    }
+  }
+
+  const buyButton = document.getElementById("buy-button");
+  const sellButton = document.getElementById("sell-button");
+
+  buyButton.addEventListener("click", () => updateTransactionType("buy"));
+  sellButton.addEventListener("click", () => updateTransactionType("sell"));
+
+
   document.getElementById('confirm-transaction').addEventListener('click', async () => {
-    const coin = document.getElementById('transaction-coin').value;
+    const selectedPair = document.getElementById('pair-selector').value;
+    const [coin, _] = selectedPair.split('/');
     const amount = parseFloat(document.getElementById('transaction-amount').value);
 
     if (!amount || amount <= 0) {
@@ -204,6 +183,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       const transactionResult = await transactionResponse.json();
+
 
       const coins = await fetchCoins();
       const coinsContainer = document.getElementById('coins-container');
