@@ -75,7 +75,7 @@ def index(request: Request):
 @app.get("/pairs")
 def get_pairs(request: Request):
     user = request.session.get("user")
-    if not user:
+    if not check_user(user):
         return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
     return {
@@ -86,7 +86,7 @@ def get_pairs(request: Request):
 @app.post("/chart")
 async def get_chart(request: Request, body: Pair):
     user = request.session.get("user")
-    if not user:
+    if not check_user(user):
         return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
     return getPairPriceChart(body.p_from, body.p_to)
@@ -94,7 +94,7 @@ async def get_chart(request: Request, body: Pair):
 @app.post("/price")
 async def get_actual_price(request: Request, body: Pair):
     user = request.session.get("user")
-    if not user:
+    if not check_user(user):
         return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
     try:
         price = getPrice(body.p_from, body.p_to)
@@ -109,7 +109,7 @@ async def get_all_user_coins(email):
     user_collection = mongo_instance.get_users_collection()
     try:
         user = user_collection.find_one({"email": email})
-        if not user:
+        if not check_user(user):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
         query = {"user_id": str(user["_id"])}
@@ -136,7 +136,7 @@ async def get_all_user_coins(email):
 @app.get("/coins")
 async def get_all_coins(request: Request):
     user = request.session.get("user")
-    if not user:
+    if not check_user(user):
         return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
     return await get_all_user_coins(user["email"])
 
@@ -146,7 +146,7 @@ async def get_all_user_transaction(email):
     user_collection = mongo_instance.get_users_collection()
     try:
         user = user_collection.find_one({"email": email})
-        if not user:
+        if not check_user(user):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
         query = {"user_id": str(user["_id"])}
@@ -174,7 +174,7 @@ async def get_all_user_transaction(email):
 @app.get("/all_transaction")
 async def get_all_transactions(request: Request):
     user = request.session.get("user")
-    if not user:
+    if not check_user(user):
         return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
     return await get_all_user_transaction(user["email"])
@@ -183,7 +183,7 @@ async def get_all_transactions(request: Request):
 @app.post("/transaction")
 async def create_transaction(request: Request, body: BodyTransaction):
     user = request.session.get("user")
-    if not user:
+    if not check_user(user):
         return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
     coins = await get_all_user_coins(user["email"])
