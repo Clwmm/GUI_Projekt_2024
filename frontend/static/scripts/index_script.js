@@ -88,6 +88,34 @@ function createCoinElement(coin) {
   return coinDiv;
 }
 
+
+let transactionType = 'buy';
+
+
+function updateTransactionType(type) {
+  transactionType = type;
+  console.log(`Transaction Type changed to: ${transactionType}`); // Log do debugowania
+
+
+  const buyButton = document.getElementById("buy-button");
+  const sellButton = document.getElementById("sell-button");
+
+  if (type === "buy") {
+    buyButton.classList.add("ring-4", "ring-green-400");
+    sellButton.classList.remove("ring-4", "ring-red-400");
+  } else if (type === "sell") {
+    sellButton.classList.add("ring-4", "ring-red-400");
+    buyButton.classList.remove("ring-4", "ring-green-400");
+  }
+}
+
+
+const buyButton = document.getElementById("buy-button");
+const sellButton = document.getElementById("sell-button");
+
+buyButton.addEventListener("click", () => updateTransactionType("buy"));
+sellButton.addEventListener("click", () => updateTransactionType("sell"));
+
 document.addEventListener('DOMContentLoaded', async () => {
   const pairs = await fetchPairs();
   const pairSelector = document.getElementById('pair-selector');
@@ -137,7 +165,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('confirm-transaction').addEventListener('click', async () => {
     const coin = document.getElementById('transaction-coin').value;
     const amount = parseFloat(document.getElementById('transaction-amount').value);
-    const transactionType = document.getElementById('transaction-type').value;
 
     if (!amount || amount <= 0) {
       alert('Please enter a valid amount.');
