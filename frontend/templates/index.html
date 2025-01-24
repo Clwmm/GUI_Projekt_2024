@@ -155,9 +155,18 @@
     <div>Balance: <span class="text-white">{{ user['balance'] }} USD</span></div>
   </div>
 
-  <button id="logout_button" class="text-gray-400 hover:text-white p-2"></button>
-  <img class="profile-img hover:opacity-80" src="{{ user['picture'] }}" alt="Profile">
+  <div class="flex items-center gap-4">
+    <img class="profile-img hover:opacity-80" src="{{ user['picture'] }}" alt="Profile">
+
+    <button id="logout_button" class="text-gray-400 hover:text-white p-2" onclick="window.location.href='/logout';">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H3"/>
+      </svg>
+    </button>
+  </div>
 </header>
+
+
 
 <main class="p-10 space-y-10">
 
