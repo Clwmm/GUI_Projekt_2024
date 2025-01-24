@@ -52,6 +52,20 @@ function createChart(containerId, chartData) {
   });
   series.setData(chartData);
   chart.timeScale().fitContent();
+
+  // Add resize event listener
+  function resizeChart() {
+    chart.resize(container.offsetWidth, container.offsetHeight);
+  }
+
+  // Listen for window resize and adjust the chart
+  window.addEventListener('resize', resizeChart);
+
+  // Clean up listener when chart is recreated
+  // This is optional, depending on how frequently createChart is called
+  container.cleanup = () => {
+    window.removeEventListener('resize', resizeChart);
+  };
 }
 
 function createCoinElement(coin) {
