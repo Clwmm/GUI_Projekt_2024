@@ -54,7 +54,7 @@ async def auth(request: Request):
             coin_to_user_collection = mongo_instance.get_coin_to_user_collection()
             existing_user = users_collection.find_one({"email": user["email"]})
             if not existing_user:
-                new_user = User(email=user["email"])
+                new_user = User(email=user["email"], banned=False)
                 inserted_user = users_collection.insert_one(new_user.dict())
                 coin = coins_collection.find_one({"name": "usd"})
 

@@ -16,6 +16,7 @@ class PydanticObjectId(ObjectId):
 
 class User(BaseModel):
     email: EmailStr = Field(..., unique=True)
+    banned: bool
 
 class UserToTransaction(BaseModel):
     user_id: PydanticObjectId
@@ -27,6 +28,14 @@ class Transaction(BaseModel):
     amount_from: float
     amount_to: float
     timestamp: datetime
+
+class TransactionEmail(BaseModel):
+    currency_from: str
+    currency_to: str
+    amount_from: float
+    amount_to: float
+    timestamp: datetime
+    email: str
 
 class CoinToUser(BaseModel):
     user_id: PydanticObjectId

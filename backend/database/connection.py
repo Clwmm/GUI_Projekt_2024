@@ -53,10 +53,14 @@ coins_collection = mongo_instance.get_coins_collection()
 new_coin_1 = Coin(name="usd")
 new_coin_2 = Coin(name="eth")
 new_coin_3 = Coin(name="btc")
-coins_collection.insert_one(new_coin_1.dict())
-coins_collection.insert_one(new_coin_2.dict())
-coins_collection.insert_one(new_coin_3.dict())
+if not coins_collection.find_one({"name": new_coin_1.name}):
+    coins_collection.insert_one(new_coin_1.dict())
+if not coins_collection.find_one({"name": new_coin_2.name}):
+    coins_collection.insert_one(new_coin_2.dict())
+if not coins_collection.find_one({"name": new_coin_3.name}):
+    coins_collection.insert_one(new_coin_3.dict())
 
 admin_collection = mongo_instance.get_admin_collection()
 new_admin = Admin(email=ADMIN_EMAIL)
-admin_collection.insert_one(new_admin.dict())
+if not admin_collection.find_one({"email": new_admin.email}):
+    admin_collection.insert_one(new_admin.dict())
