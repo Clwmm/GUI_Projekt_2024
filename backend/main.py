@@ -133,6 +133,23 @@ async def get_all_user_coins(email):
         print(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+async def check_admin(email):
+    admin_collection = mongo_instance.get_admin_collection()
+    admin = admin_collection.find_one({"email": email})
+    if not admin:
+        return False
+    return True
+
+@app.get("/get_users_transactions")
+async def get_users_transactions(request: Request):
+    user = request.session.get("user")
+    if not user:
+        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    if not check_admin(user.email):
+        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+    trans_col = mongo_instance.get_transactions_collection()
+
 @app.get("/coins")
 async def get_all_coins(request: Request):
     user = request.session.get("user")

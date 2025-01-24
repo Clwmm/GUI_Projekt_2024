@@ -3,9 +3,16 @@ import pandas as pd
 import time as time
 from pycoingecko import CoinGeckoAPI
 
-print("Connecting to CoinGeckAPI..")
+print("Starting CoinGeckoAPI instance...")
 cg = CoinGeckoAPI()
-print(cg.ping())
+print("\tSuccessfully created CoinGeckoAPI instance!")
+
+try:
+    print("Connecting to CoinGeckoAPI...")
+    cg.ping()
+    print("\tSuccessfully connected to CoinGeckoAPI!")
+except Exception as e:
+    print("Connetction Error: ", e)
 
 def getPrice(coin_id, vs_currency):
     from_ = coin_id

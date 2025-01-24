@@ -44,3 +44,6 @@ class BodyTransaction(BaseModel):
     t_from: str
     t_to: str
     amount_from: float
+
+class Admin(BaseModel):
+    email: str

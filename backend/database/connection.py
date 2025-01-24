@@ -2,7 +2,7 @@ from pymongo.mongo_client import MongoClient
 from pymongo.collection import Collection
 from pymongo.errors import PyMongoError
 from pydantic import BaseModel
-from backend.models.transaction import Coin
+from backend.models.transaction import Coin, Admin
 
 from dotenv import load_dotenv, find_dotenv
 import os
@@ -10,6 +10,7 @@ load_dotenv(find_dotenv())
 
 MONGO_URI = os.environ.get("MONGODB")
 DB_NAME = os.environ.get("DB_NAME")
+ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL")
 
 class MongoDB:
     def __init__(self, uri: str, db_name: str):
@@ -33,8 +34,13 @@ class MongoDB:
     def get_coin_to_user_collection(self) -> Collection:
         return self.db["coin_to_user"]
 
+    def get_admin_collection(self) -> Collection:
+        return self.db["admin"]
 
+
+print("Starting MongoDB instance...")
 mongo_instance = MongoDB(MONGO_URI, DB_NAME)
+print("\tSuccessfully created MongoDB instance!")
 
 coins_collection = mongo_instance.get_coins_collection()
 new_coin_1 = Coin(name="usd")
@@ -44,10 +50,14 @@ coins_collection.insert_one(new_coin_1.dict())
 coins_collection.insert_one(new_coin_2.dict())
 coins_collection.insert_one(new_coin_3.dict())
 
+admin_collection = mongo_instance.get_admin_collection()
+new_admin = Admin(email=ADMIN_EMAIL)
+admin_collection.insert_one(new_admin.dict())
+
 
 try:
     print("Connecting to DB...")
     mongo_instance.client.admin.command('ping')
-    print("Pinged your deployment. You successfully connected to MongoDB!")
+    print("\tSuccessfully connected to DB!")
 except Exception as e:
     print("Connetction Error: ", e)
