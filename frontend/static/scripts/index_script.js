@@ -24,6 +24,15 @@ async function fetchChartData(p_from, p_to) {
   return data.map(item => ({ time: item.time, value: item.value }));
 }
 
+async function fetchActualPrice(p_from, p_to) {
+  const response = await fetch('http://localhost:8000/price', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ p_from, p_to }),
+  });
+  return await response.json();
+}
+
 function createChart(containerId, chartData) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
@@ -112,6 +121,62 @@ document.addEventListener('DOMContentLoaded', async () => {
     pairSelector.appendChild(option);
   });
 
+  let transactionType = "";
+  function updateTransactionType(type, value) {
+    transactionType = type;
+
+    const buyButton = document.getElementById("buy-button");
+    const sellButton = document.getElementById("sell-button");
+
+    if (type === "buy") {
+      buyButton.classList.add("ring-4", "ring-green-400");
+      sellButton.classList.remove("ring-4", "ring-red-400");
+
+      const amount_from = document.getElementById("transaction-amount");
+      const spanElement_from = amount_from.parentElement.querySelector("span");
+      const amount_to = document.getElementById("transaction-result-amount");
+      const spanElement_to = amount_to.parentElement.querySelector("span");
+      const selectedPair = value ? value : document.getElementById('pair-selector').value;
+      const [from, to] = selectedPair.split('/');
+      spanElement_from.innerHTML = to.toUpperCase();
+      spanElement_to.innerHTML = from.toUpperCase();
+
+
+    } else if (type === "sell") {
+      sellButton.classList.add("ring-4", "ring-red-400");
+      buyButton.classList.remove("ring-4", "ring-green-400");
+
+      const amount_from = document.getElementById("transaction-amount");
+      const spanElement_from = amount_from.parentElement.querySelector("span");
+      const amount_to = document.getElementById("transaction-result-amount");
+      const spanElement_to = amount_to.parentElement.querySelector("span");
+      const selectedPair = value ? value : document.getElementById('pair-selector').value;
+      const [from, to] = selectedPair.split('/');
+      spanElement_from.innerHTML = from.toUpperCase();
+      spanElement_to.innerHTML = to.toUpperCase();
+    }
+  }
+
+  const transactionAmountElement = document.getElementById('transaction-amount');
+
+  async function updateTransactionResultAmount(value) {
+    if (transactionType === "")
+      return;
+
+    const selectedPair = document.getElementById('pair-selector').value;
+    const [from, to] = selectedPair.split('/');
+
+    const exchange_rate = await fetchActualPrice(to, from)
+    const result = exchange_rate * value;
+    const ele = document.getElementById('transaction-result-amount');
+    ele.innerHTML = result.toString();
+
+  }
+
+  transactionAmountElement.addEventListener('input', (event) => {
+    updateTransactionResultAmount(event.target.value)
+  });
+
   const [initialFrom, initialTo] = pairs[0].split('/');
   const initialData = await fetchChartData(initialFrom, initialTo);
   createChart('crypto-chart', initialData);
@@ -122,6 +187,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const chartData = await fetchChartData(p_from, p_to);
     createChart('crypto-chart', chartData);
     document.getElementById('chart-title').textContent = `Chart: ${event.target.value.toUpperCase()}`;
+    updateTransactionType(transactionType, event.target.value)
   });
 
   const coins = await fetchCoins();
@@ -131,21 +197,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     coinsContainer.appendChild(createCoinElement(coin));
   });
 
-  let transactionType = "";
-  function updateTransactionType(type) {
-    transactionType = type;
 
-    const buyButton = document.getElementById("buy-button");
-    const sellButton = document.getElementById("sell-button");
 
-    if (type === "buy") {
-      buyButton.classList.add("ring-4", "ring-green-400");
-      sellButton.classList.remove("ring-4", "ring-red-400");
-    } else if (type === "sell") {
-      sellButton.classList.add("ring-4", "ring-red-400");
-      buyButton.classList.remove("ring-4", "ring-green-400");
-    }
-  }
 
   const buyButton = document.getElementById("buy-button");
   const sellButton = document.getElementById("sell-button");

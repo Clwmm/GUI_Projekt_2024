@@ -205,14 +205,22 @@
 
         </div>
         <div class="flex flex-col space-y-2">
-          <label class="text-sm text-gray-400">Amount</label>
           <div class="relative">
             <input type="number"
                    id="transaction-amount"
                    placeholder="0.00"
                    class="bg-gray-700 text-white p-4 rounded-lg w-full border border-gray-600 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"/>
-            <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400">USD</span>
+            <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"></span>
           </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <div class="relative">
+                <div id="transaction-result-amount"
+                     class="bg-gray-700 text-white p-4 rounded-lg w-full border border-gray-600 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200">
+                    0.00
+                </div>
+                <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"></span>
+            </div>
         </div>
         <button id="confirm-transaction"
                 class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-4 px-6 rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-2">
