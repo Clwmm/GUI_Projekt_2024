@@ -112,6 +112,43 @@ async def deposit(request: Request, body: CoinAmount):
 
     return HTTPException(status_code=status.HTTP_200_OK)
 
+@router.post("/withdraw")
+async def withdraw(request: Request, body: CoinAmount):
+    user = request.session.get("user")
+    if not check_user(user):
+        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+
+    coins = await get_all_user_coins(user["email"])
+    amount = next((item["amount"] for item in coins if item["name"] == "usd"), None)
+
+    value = body.amount
+
+    if value > amount:
+        return HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+
+    coins_coll = mongo_instance.get_coins_collection()
+    coin_to_user_col = mongo_instance.get_coin_to_user_collection()
+    user_col = mongo_instance.get_users_collection()
+
+    usd_coin = coins_coll.find_one({"name": "usd"})
+    if not usd_coin:
+        return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    userdb = user_col.find_one({"email": user["email"]})
+    if not userdb:
+        return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    update_result = coin_to_user_col.update_one(
+        {"user_id": str(userdb["_id"]), "coin_id": str(usd_coin["_id"])},
+        {"$inc": {"amount": -value}}
+    )
+
+    if update_result.modified_count == 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+
+    return HTTPException(status_code=status.HTTP_200_OK)
+
 @router.get("/coins")
 async def get_all_coins(request: Request):
     user = request.session.get("user")
