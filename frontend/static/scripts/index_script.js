@@ -162,11 +162,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function updateTransactionResultAmount(value) {
     if (transactionType === "")
       return;
-
+    let exchange_rate = 0;
     const selectedPair = document.getElementById('pair-selector').value;
     const [from, to] = selectedPair.split('/');
 
-    const exchange_rate = await fetchActualPrice(to, from)
+    if (transactionType === "buy") {
+      exchange_rate = await fetchActualPrice(to, from)
+    }
+    if (transactionType === "sell") {
+      exchange_rate = await fetchActualPrice(from, to)
+    }
+
     const result = exchange_rate * value;
     const ele = document.getElementById('transaction-result-amount');
     ele.innerHTML = result.toString();
