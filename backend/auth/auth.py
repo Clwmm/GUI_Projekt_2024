@@ -58,7 +58,7 @@ async def auth(request: Request):
                 inserted_user = users_collection.insert_one(new_user.dict())
                 coin = coins_collection.find_one({"name": "usd"})
 
-                newCoinToUser = CoinToUser(user_id=inserted_user.inserted_id, coin_id=coin["_id"], amount=60.0)
+                newCoinToUser = CoinToUser(user_id=inserted_user.inserted_id, coin_id=coin["_id"], amount=0.0)
                 coin_to_user_collection.insert_one(newCoinToUser.dict())
 
         except OAuthError as e:

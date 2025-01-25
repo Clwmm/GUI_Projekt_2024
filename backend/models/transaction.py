@@ -45,6 +45,9 @@ class CoinToUser(BaseModel):
     coin_id: PydanticObjectId
     amount: float
 
+class CoinAmount(BaseModel):
+    amount: float
+
 class Coin(BaseModel):
     name: str
 
