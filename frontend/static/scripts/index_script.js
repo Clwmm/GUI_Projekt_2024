@@ -62,16 +62,12 @@ function createChart(containerId, chartData) {
   series.setData(chartData);
   chart.timeScale().fitContent();
 
-  // Add resize event listener
   function resizeChart() {
     chart.resize(container.offsetWidth, container.offsetHeight);
   }
 
-  // Listen for window resize and adjust the chart
   window.addEventListener('resize', resizeChart);
 
-  // Clean up listener when chart is recreated
-  // This is optional, depending on how frequently createChart is called
   container.cleanup = () => {
     window.removeEventListener('resize', resizeChart);
   };
@@ -160,28 +156,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   const transactionAmountElement = document.getElementById('transaction-amount');
 
   async function updateTransactionResultAmount(value) {
-    if (transactionType === "")
-      return;
+    if (transactionType === "") return;
+
     let exchange_rate = 0;
     const selectedPair = document.getElementById('pair-selector').value;
     const [from, to] = selectedPair.split('/');
 
     if (transactionType === "buy") {
-      exchange_rate = await fetchActualPrice(to, from)
+      exchange_rate = await fetchActualPrice(to, from);
     }
     if (transactionType === "sell") {
-      exchange_rate = await fetchActualPrice(from, to)
+      exchange_rate = await fetchActualPrice(from, to);
     }
 
     const result = exchange_rate * value;
     const ele = document.getElementById('transaction-result-amount');
     ele.innerHTML = result.toString();
-
   }
 
-  transactionAmountElement.addEventListener('input', (event) => {
-    updateTransactionResultAmount(event.target.value)
+  transactionAmountElement.addEventListener('blur', (event) => {
+    const value = parseFloat(event.target.value);
+    if (!isNaN(value)) {
+      updateTransactionResultAmount(value);
+    }
   });
+
 
   const [initialFrom, initialTo] = pairs[0].split('/');
   const initialData = await fetchChartData(initialFrom, initialTo);
@@ -228,22 +227,38 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    let transactionData;
-    if (transactionType === 'buy') {
-      transactionData = {
-        t_from: 'usd',
-        t_to: coin,
-        amount_from: amount
-      };
-    } else {
-      transactionData = {
-        t_from: coin,
-        t_to: 'usd',
-        amount_from: amount
-      };
-    }
-
     try {
+      const coins = await fetchCoins();
+      const coinData = coins.find(c => c.name.toLowerCase() === coin.toLowerCase());
+      const usdData = coins.find(c => c.name.toLowerCase() === 'usd');
+
+      if (transactionType === 'buy') {
+        if (!usdData || usdData.amount < amount) {
+          alert('Insufficient USD balance to complete the transaction.');
+          return;
+        }
+      } else if (transactionType === 'sell') {
+        if (!coinData || coinData.amount < amount) {
+          alert(`Insufficient ${coin.toUpperCase()} balance to complete the transaction.`);
+          return;
+        }
+      }
+
+      let transactionData;
+      if (transactionType === 'buy') {
+        transactionData = {
+          t_from: 'usd',
+          t_to: coin,
+          amount_from: amount
+        };
+      } else {
+        transactionData = {
+          t_from: coin,
+          t_to: 'usd',
+          amount_from: amount
+        };
+      }
+
       const transactionResponse = await fetch('http://localhost:8000/transaction', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -256,12 +271,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       const transactionResult = await transactionResponse.json();
+      alert('Transaction completed successfully.');
 
-
-      const coins = await fetchCoins();
+      const updatedCoins = await fetchCoins();
       const coinsContainer = document.getElementById('coins-container');
       coinsContainer.innerHTML = '';
-      coins.forEach(coin => {
+      updatedCoins.forEach(coin => {
         coinsContainer.appendChild(createCoinElement(coin));
       });
 
@@ -270,4 +285,5 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error('Transaction error:', error);
     }
   });
+
 });
