@@ -62,10 +62,8 @@ async def get_all_user_transaction(email):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
         query = {"user_id": str(user["_id"])}
-        print("user id: ", str(user["_id"]))
         projection = {"_id": 0, "user_id": 0}
         transactions = list(user_to_trans_col.find(query, projection))
-        print("trans: ", transactions)
         result = []
 
         for trans in transactions:
@@ -128,10 +126,6 @@ async def create_transaction(request: Request, body: BodyTransaction):
         coin_from = coins_collection.find_one({"name": body.t_from})
         coin_to = coins_collection.find_one({"name": body.t_to})
 
-        print("User id: ", user["_id"])
-        print("Coin_from: name: ", body.t_from, " id: ", coin_from["_id"])
-        print("Coin_from: name: ", body.t_to, " id: ", coin_to["_id"])
-
         query = {"user_id": str(user["_id"]), "coin_id": str(coin_from["_id"])}
         projection = {"$inc": {"amount": -body.amount_from}}
         coins_to_user_coll.update_one(query, projection)
@@ -153,8 +147,6 @@ async def create_transaction(request: Request, body: BodyTransaction):
 
         newUserToTransaction = UserToTransaction(user_id=user["_id"], transaction_id=inserted_transaction.inserted_id)
         user_to_trans.insert_one(newUserToTransaction.dict())
-
-
 
     except Exception as e:
         print(e)

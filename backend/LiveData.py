@@ -20,7 +20,6 @@ def getPrice(coin_id, vs_currency):
         from_ = "bitcoin"
     if from_ == "eth":
         from_ = "ethereum"
-    print(from_)
     price = cg.get_price(ids=from_, vs_currencies=vs_currency)
     price = next(iter(next(iter(price.values())).values()))
 
