@@ -10,6 +10,7 @@ GOOGLE_CLIENT_ID=<google client id api key console.cloud.google.com>
 GOOGLE_CLIENT_SECRET=<google client secret api key console.cloud.google.com>
 MONGODB=<mongoDB atlas connection uri to the cluster>
 DB_NAME="guiDB"
+ADMIN_EMAIL=<enter admin email>
 ```
 
 ### Lightweight-Chart preparation
