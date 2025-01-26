@@ -1,10 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+  <meta charset="UTF-8" />
+  <title>User Profile</title>
+  <!-- Link do skompilowanego Tailwind CSS (output.css) -->
+  <link rel="stylesheet" href="/static/css/output.css" />
+  <style>
+    /* Styl zbliżony do drugiej strony */
+    body {
+      background-color: #121828;
+      color: #e5e7eb;
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
 </head>
 <body>
-$END$
+  <div class="max-w-4xl mx-auto mt-10">
+    <!-- Nagłówek / Tytuł -->
+    <h1 class="text-2xl font-bold mb-5 text-center">Portfolio</h1>
+
+    <!-- Sekcja Balansu -->
+    <div class="bg-gray-800 p-5 rounded shadow mb-5">
+      <h2 class="text-xl font-semibold mb-3">Your Balance</h2>
+      <p id="userBalance" class="text-2xl font-bold text-green-400">
+        <!-- Balans zostanie wstawiony przez JS -->
+      </p>
+    </div>
+
+    <!-- Przyciski (Deposit/Withdraw) -->
+    <div class="bg-gray-800 p-5 rounded shadow mb-5 flex items-center justify-around">
+      <button
+        id="depositBtn"
+        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+      >
+        Deposit
+      </button>
+      <button
+        id="withdrawBtn"
+        class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+      >
+        Withdraw
+      </button>
+    </div>
+
+    <!-- Sekcja Transakcji -->
+    <div class="bg-gray-800 p-5 rounded shadow">
+      <h2 class="text-xl font-semibold mb-3">Transaction History</h2>
+      <ul id="transactionsList" class="space-y-3">
+        <!-- Lista transakcji wstawiana dynamicznie przez JS -->
+      </ul>
+    </div>
+  </div>
+
+  <!-- Skrypt -->
+  <script src="/static/scripts/user_profile.js"></script>
 </body>
 </html>

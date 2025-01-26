@@ -55,6 +55,9 @@ def index(request: Request):
 
     return templates.TemplateResponse(name="login.html", context={"request": request})
 
+@app.get("/profile")
+def profile(request: Request):
+    return templates.TemplateResponse(name="user_profile.html", context={"request": request})
 
 @app.get("/pairs")
 def get_pairs(request: Request):
