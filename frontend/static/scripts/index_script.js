@@ -202,9 +202,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     coinsContainer.appendChild(createCoinElement(coin));
   });
 
-
-
-
   const buyButton = document.getElementById("buy-button");
   const sellButton = document.getElementById("sell-button");
 
@@ -218,12 +215,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const amount = parseFloat(document.getElementById('transaction-amount').value);
 
     if (!amount || amount <= 0) {
-      alert('Please enter a valid amount.');
+      showNotification('Please enter a valid amount.', 3000, 'error');
       return;
     }
 
     if (coin.toLowerCase() === 'usd') {
-      alert('Cannot trade USD for USD.');
+      showNotification('Cannot trade USD for USD.', 3000, 'error');
       return;
     }
 
@@ -234,12 +231,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       if (transactionType === 'buy') {
         if (!usdData || usdData.amount < amount) {
-          alert('Insufficient USD balance to complete the transaction.');
+          showNotification('Insufficient USD balance to complete the transaction.', 3000, 'error');
           return;
         }
       } else if (transactionType === 'sell') {
         if (!coinData || coinData.amount < amount) {
-          alert(`Insufficient ${coin.toUpperCase()} balance to complete the transaction.`);
+          showNotification(`Insufficient ${coin.toUpperCase()} balance to complete the transaction.`, 3000, 'error');
           return;
         }
       }
@@ -271,7 +268,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       const transactionResult = await transactionResponse.json();
-      alert('Transaction completed successfully.');
+      showNotification('Transaction completed successfully.', 2000);
 
       const updatedCoins = await fetchCoins();
       const coinsContainer = document.getElementById('coins-container');
@@ -281,9 +278,34 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
 
     } catch (error) {
-      alert(error.message);
+      showNotification(error.message, 3000, 'error');
       console.error('Transaction error:', error);
     }
   });
 
 });
+
+
+function showNotification(message, duration = 3000, type = 'success') {
+  const notification = document.createElement('div');
+  notification.className = `fixed top-4 right-4 bg-${
+      type === 'success' ? 'green' : 'red'
+  }-500 text-white px-6 py-3 rounded-lg shadow-lg opacity-0 transition-opacity duration-500 transform translate-x-full z-50`;
+  notification.textContent = message;
+
+  const container = document.getElementById('notificationContainer');
+  container.appendChild(notification);
+
+  setTimeout(() => {
+    notification.classList.remove('opacity-0', 'translate-x-full');
+    notification.classList.add('opacity-100', 'translate-x-0');
+  }, 10);
+
+  setTimeout(() => {
+    notification.classList.remove('opacity-100', 'translate-x-0');
+    notification.classList.add('opacity-0', 'translate-x-full');
+    setTimeout(() => {
+      container.removeChild(notification);
+    }, 500);
+  }, duration);
+}
