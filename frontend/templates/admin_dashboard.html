@@ -7,282 +7,68 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <script>
-        window.onload = function() {
-            const ctx1 = document.getElementById('ordersChart').getContext('2d');
-            const ordersChart = new Chart(ctx1, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'Orders',
-                        data: [65, 59, 80, 81, 56, 55],
-                        fill: false,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            const ctx2 = document.getElementById('revenueChart').getContext('2d');
-            const revenueChart = new Chart(ctx2, {
-                type: 'bar',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'Revenue',
-                        data: [2000, 2500, 3000, 3500, 4000, 4500],
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            const ctx3 = document.getElementById('userEngagementChart').getContext('2d');
-            const userEngagementChart = new Chart(ctx3, {
-                type: 'radar',
-                data: {
-                    labels: ['Active', 'Inactive', 'New', 'Returning'],
-                    datasets: [{
-                        label: 'User Engagement',
-                        data: [75, 30, 50, 90],
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    }]
-                }
-            });
-        };
-    </script>
+    <script src="../static/scripts/admin_script.js" defer></script>
 </head>
-<body class="bg-gray-100">
-
-    <div class="flex h-screen">
-        <aside class="w-64 bg-gray-800 text-white p-6">
-            <h2 class="text-2xl font-semibold mb-6">Admin Panel</h2>
-            <ul class="space-y-4">
-                <li><a href="#dashboard" class="block py-2 px-4 rounded hover:bg-gray-700 text-gray-300"><i class="fas fa-tachometer-alt mr-2"></i> Dashboard</a></li>
-                <li><a href="#orders" class="block py-2 px-4 rounded hover:bg-gray-700 text-gray-300"><i class="fas fa-box-open mr-2"></i> Orders</a></li>
-                <li><a href="#users" class="block py-2 px-4 rounded hover:bg-gray-700 text-gray-300"><i class="fas fa-users mr-2"></i> Users</a></li>
-                <li><a href="#settings" class="block py-2 px-4 rounded hover:bg-gray-700 text-gray-300"><i class="fas fa-cogs mr-2"></i> Settings</a></li>
-                <li><a href="#logout" class="block py-2 px-4 rounded hover:bg-gray-700 text-gray-300"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a></li>
-            </ul>
-        </aside>
-
-        <main class="flex-1 p-8 overflow-auto">
-            <header class="mb-8">
-                <h1 class="text-3xl font-semibold">Welcome to the Admin Dashboard</h1>
-                <p class="text-gray-600">Here’s a comprehensive overview of your data.</p>
-            </header>
-
-            <section id="dashboard" class="space-y-8 mb-8">
-                <h2 class="text-2xl font-semibold">Dashboard Overview</h2>
-
-                <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-200">
-                        <h3 class="text-lg font-semibold mb-4">Total Revenue</h3>
-                        <p class="text-2xl font-bold text-green-600">$12,345</p>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-200">
-                        <h3 class="text-lg font-semibold mb-4">Total Orders</h3>
-                        <p class="text-2xl font-bold text-teal-600">1,234</p>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-200">
-                        <h3 class="text-lg font-semibold mb-4">Active Users</h3>
-                        <p class="text-2xl font-bold text-purple-600">5,678</p>
-                    </div>
-                </section>
-
-                <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-200">
-                        <h3 class="text-lg font-semibold mb-4">Orders Over Time</h3>
-                        <canvas id="ordersChart"></canvas>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-200">
-                        <h3 class="text-lg font-semibold mb-4">Revenue by Month</h3>
-                        <canvas id="revenueChart"></canvas>
-                    </div>
-                </section>
-
-                <section class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-200 mb-8">
-                    <h3 class="text-lg font-semibold mb-4">User Engagement</h3>
-                    <canvas id="userEngagementChart"></canvas>
-                </section>
-
-                <section class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-200">
-                    <h3 class="text-lg font-semibold mb-4">Recent Activity</h3>
-                    <table class="min-w-full table-auto">
-                        <thead>
-                            <tr class="bg-gray-200">
-                                <th class="px-4 py-2 text-left">User</th>
-                                <th class="px-4 py-2 text-left">Action</th>
-                                <th class="px-4 py-2 text-left">Date</th>
-                            </tr>
+<body class="bg-gray-900 text-white">
+<div class="flex h-screen">
+    <aside class="w-64 bg-gray-800 p-6">
+        <h2 class="text-2xl font-semibold mb-6">Admin Panel</h2>
+        <ul class="space-y-4">
+            <li><a href="#users" class="block py-2 px-4 rounded hover:bg-gray-700 text-gray-300"><i class="fas fa-users mr-2"></i> Users</a></li>
+            <li><a href="#transactions" class="block py-2 px-4 rounded hover:bg-gray-700 text-gray-300"><i class="fas fa-exchange-alt mr-2"></i> Transactions</a></li>
+            <li><a href="/logout" class="block py-2 px-4 rounded hover:bg-gray-700 text-gray-300"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a></li>
+        </ul>
+    </aside>
+    <main class="flex-1 p-8 overflow-auto">
+        <header class="mb-8">
+            <h1 class="text-3xl font-semibold">Welcome to the Admin Dashboard</h1>
+            <p class="text-gray-400">Here’s a comprehensive overview of your data.</p>
+        </header>
+        <section id="users" class="space-y-8 mb-8">
+            <h2 class="text-3xl font-semibold text-gray-200 mb-6">Users Management</h2>
+            <section class="bg-gray-800 p-8 rounded-lg shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-2xl font-semibold text-gray-200">All Users</h3>
+                </div>
+                <div class="overflow-x-auto rounded-lg">
+                    <table class="min-w-full">
+                        <thead class="bg-gray-700">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-300">Email</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-300">Actions</th>
+                        </tr>
                         </thead>
-                        <tbody>
-                            <tr class="border-b">
-                                <td class="px-4 py-2">Alice Walker</td>
-                                <td class="px-4 py-2">Completed Order #1001</td>
-                                <td class="px-4 py-2">2024-12-12</td>
-                            </tr>
-                            <tr class="border-b">
-                                <td class="px-4 py-2">John Doe</td>
-                                <td class="px-4 py-2">Placed Order #1002</td>
-                                <td class="px-4 py-2">2024-12-11</td>
-                            </tr>
-                            <tr class="border-b">
-                                <td class="px-4 py-2">Sam Johnson</td>
-                                <td class="px-4 py-2">Updated Profile</td>
-                                <td class="px-4 py-2">2024-12-10</td>
-                            </tr>
+                        <tbody id="usersTableBody" class="bg-gray-800">
                         </tbody>
                     </table>
-                </section>
+                </div>
             </section>
-<section id="orders" class="space-y-8 mb-8">
-    <h2 class="text-3xl font-semibold text-gray-800 mb-6">Orders Management</h2>
-
-    <section class="bg-white p-8 rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-2xl font-semibold text-gray-700">Recent Orders</h3>
-            <button class="bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 transition duration-200">
-                <i class="fas fa-filter mr-2"></i> Filter Orders
-            </button>
-        </div>
-
-        <div class="overflow-x-auto rounded-lg">
-            <table class="min-w-full table-auto">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-600">Order ID</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-600">Customer</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-600">Total</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-600">Status</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-600">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="border-b hover:bg-gray-50 transition duration-200">
-                        <td class="px-6 py-4 text-sm font-medium text-gray-700">1001</td>
-                        <td class="px-6 py-4 text-sm font-medium text-gray-700">Alice Walker</td>
-                        <td class="px-6 py-4 text-sm font-medium text-gray-700">$100</td>
-                        <td class="px-6 py-4 text-sm font-medium text-green-600">Completed</td>
-                        <td class="px-6 py-4 text-sm font-medium">
-                            <button class="text-blue-600 hover:text-blue-800">
-                                <i class="fas fa-eye mr-2"></i> View
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="border-b hover:bg-gray-50 transition duration-200">
-                        <td class="px-6 py-4 text-sm font-medium text-gray-700">1002</td>
-                        <td class="px-6 py-4 text-sm font-medium text-gray-700">John Doe</td>
-                        <td class="px-6 py-4 text-sm font-medium text-gray-700">$250</td>
-                        <td class="px-6 py-4 text-sm font-medium text-yellow-600">Pending</td>
-                        <td class="px-6 py-4 text-sm font-medium">
-                            <button class="text-blue-600 hover:text-blue-800">
-                                <i class="fas fa-eye mr-2"></i> View
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="border-b hover:bg-gray-50 transition duration-200">
-                        <td class="px-6 py-4 text-sm font-medium text-gray-700">1003</td>
-                        <td class="px-6 py-4 text-sm font-medium text-gray-700">Sam Johnson</td>
-                        <td class="px-6 py-4 text-sm font-medium text-gray-700">$50</td>
-                        <td class="px-6 py-4 text-sm font-medium text-red-600">Cancelled</td>
-                        <td class="px-6 py-4 text-sm font-medium">
-                            <button class="text-blue-600 hover:text-blue-800">
-                                <i class="fas fa-eye mr-2"></i> View
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
-</section>
-
-            <section id="orders" class="space-y-8 mb-8">
-                <h2 class="text-3xl font-semibold text-gray-800 mb-6">Orders Management</h2>
-
-                <section class="bg-white p-8 rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-2xl font-semibold text-gray-700">Recent Orders</h3>
-                        <button class="bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 transition duration-200">
-                            <i class="fas fa-filter mr-2"></i> Filter Orders
-                        </button>
-                    </div>
-
-                    <div class="overflow-x-auto rounded-lg">
-                        <table class="min-w-full table-auto">
-                            <thead class="bg-gray-100">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-600">Order ID</th>
-                                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-600">Customer</th>
-                                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-600">Total</th>
-                                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-600">Status</th>
-                                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-600">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="border-b hover:bg-gray-50 transition duration-200">
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-700">1001</td>
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-700">Alice Walker</td>
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-700">$100</td>
-                                    <td class="px-6 py-4 text-sm font-medium text-green-600">Completed</td>
-                                    <td class="px-6 py-4 text-sm font-medium">
-                                        <button class="bg-yellow-400 text-white py-1 px-3 rounded-lg hover:bg-yellow-500 transition duration-200">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="border-b hover:bg-gray-50 transition duration-200">
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-700">1002</td>
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-700">John Doe</td>
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-700">$150</td>
-                                    <td class="px-6 py-4 text-sm font-medium text-yellow-600">Processing</td>
-                                    <td class="px-6 py-4 text-sm font-medium">
-                                        <button class="bg-blue-600 text-white py-1 px-3 rounded-lg hover:bg-blue-700 transition duration-200">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="border-b hover:bg-gray-50 transition duration-200">
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-700">1003</td>
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-700">Sam Johnson</td>
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-700">$75</td>
-                                    <td class="px-6 py-4 text-sm font-medium text-red-600">Cancelled</td>
-                                    <td class="px-6 py-4 text-sm font-medium">
-                                        <button class="bg-gray-600 text-white py-1 px-3 rounded-lg hover:bg-gray-700 transition duration-200">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
+        </section>
+        <section id="transactions" class="space-y-8 mb-8">
+            <h2 class="text-3xl font-semibold text-gray-200 mb-6">Transactions Management</h2>
+            <section class="bg-gray-800 p-8 rounded-lg shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-2xl font-semibold text-gray-200">All Transactions</h3>
+                </div>
+                <div class="overflow-x-auto rounded-lg">
+                    <table class="min-w-full">
+                        <thead class="bg-gray-700">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-300">From</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-300">To</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-300">Amount From</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-300">Amount To</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-300">Timestamp</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-300">Email</th>
+                        </tr>
+                        </thead>
+                        <tbody id="transactionsTableBody" class="bg-gray-800">
+                        </tbody>
+                    </table>
+                </div>
             </section>
-
-        </main>
-    </div>
-
+        </section>
+    </main>
+</div>
 </body>
 </html>

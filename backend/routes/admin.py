@@ -99,5 +99,3 @@ async def ban_user(request: Request, body: UserEmail):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
     return {"message": "success"}
-
-
