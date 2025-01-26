@@ -185,13 +185,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   const [initialFrom, initialTo] = pairs[0].split('/');
   const initialData = await fetchChartData(initialFrom, initialTo);
   createChart('crypto-chart', initialData);
-  document.getElementById('chart-title').textContent = `Chart: ${pairs[0].toUpperCase()}`;
 
   pairSelector.addEventListener('change', async (event) => {
     const [p_from, p_to] = event.target.value.split('/');
     const chartData = await fetchChartData(p_from, p_to);
     createChart('crypto-chart', chartData);
-    document.getElementById('chart-title').textContent = `Chart: ${event.target.value.toUpperCase()}`;
     updateTransactionType(transactionType, event.target.value)
   });
 

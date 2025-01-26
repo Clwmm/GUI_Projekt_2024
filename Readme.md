@@ -23,7 +23,8 @@ https://tradingview.github.io/lightweight-charts/docs?fbclid=IwY2xjawGopxNleHRuA
 
 ### Tailwind
 
-1. Run ```npx tailwindcss -i ./frontend/static/css/input.css -o ./frontend/static/css/output.css --watch```
+1. Install ```npm install tailwindcss @tailwindcss/vite```
+2. Run ```npx tailwindcss -i ./frontend/static/css/input.css -o ./frontend/static/css/output.css --watch```
 
 ### FastApi
 

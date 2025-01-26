@@ -147,16 +147,15 @@
 <body>
 <div id="notificationContainer"></div>
 <header class="bg-gray-800 shadow-lg h-24 flex items-center justify-between px-8 border-b border-gray-700">
-  <div class="text-3xl font-semibold text-white">
-    CryptoTradingApp
-  </div>
-  <div class="header-info text-gray-400">
-    <div>Wallet ID: <span class="text-white">{{ user['wallet_id'] }}</span></div>
-    <div>Balance: <span class="text-white">{{ user['balance'] }} USD</span></div>
-  </div>
+    <div class="text-3xl font-semibold text-white">
+        <img src="{{ url_for('static', path='/svg/logo.svg') }}" class="w-1/2 h-1/2" alt="Logo">
+    </div>
 
   <div class="flex items-center gap-4">
-    <img class="profile-img hover:opacity-80" src="{{ user['picture'] }}" alt="Profile">
+      <img class="profile-img hover:opacity-80"
+          src="{{ user['picture'] if user['picture'] else url_for('static', path='svg/avatar.svg') }}"
+          alt="Profile">
+
 
     <button id="logout_button" class="text-gray-400 hover:text-white p-2" onclick="window.location.href='/logout';">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -166,17 +165,14 @@
   </div>
 </header>
 
-<main class="p-10 space-y-10">
+<main class="px-10 py-5 space-y-10">
 
   <section class="fade-in">
-    <div class="scrollbar">
-      <label for="pair-selector" class="block text-lg font-semibold">Select Pair:</label>
-      <select id="pair-selector" class="bg-gray-700 text-white p-4 rounded-md w-full focus:ring-2 focus:ring-indigo-500">
-      </select>
-    </div>
     <div class="bg-gray-800 p-8 rounded-lg shadow-xl">
-      <h2 id="chart-title" class="text-3xl font-semibold text-white mb-6">Selected Pair</h2>
-      <div id="crypto-chart" class="chart-container"></div>
+        <label for="pair-selector" class="block text-lg font-semibold">Select Pair:</label>
+        <select id="pair-selector" class="bg-gray-700 text-white mb-4 p-4 rounded-md w-1/2 focus:ring-2 focus:ring-indigo-500">
+        </select>
+        <div id="crypto-chart" class="chart-container"></div>
     </div>
   </section>
 
