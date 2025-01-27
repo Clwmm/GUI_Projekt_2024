@@ -8,12 +8,9 @@
 </head>
 <body class="h-screen bg-gray-900 flex items-center justify-center text-gray-300">
   <div class="bg-gray-800 shadow-lg rounded-lg flex flex-col md:flex-row w-11/12 max-w-4xl overflow-hidden">
-    <!-- Left side with SVG logo -->
     <div class="w-full md:w-1/2 bg-gray-700 flex items-center justify-center p-4">
       <img src="{{ url_for('static', path='/svg/logo.svg') }}" class="w-2/3 h-full" alt="Logo">
     </div>
-
-    <!-- Right side with Login button -->
     <div class="w-full md:w-1/2 flex flex-col items-center justify-center p-8">
       <h2 class="text-2xl font-semibold text-gray-100 mb-6">Login to Your Account</h2>
       <button id="login_button" class="bg-red-600 hover:bg-red-700 text-gray-100 font-semibold py-2 px-4 rounded flex items-center">

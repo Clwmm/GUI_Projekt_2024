@@ -3,10 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>User Profile</title>
-  <!-- Link do skompilowanego Tailwind CSS (output.css) -->
   <link rel="stylesheet" href="/static/css/output.css" />
   <style>
-    /* Styl zbliżony do drugiej strony */
     body {
       background-color: #121828;
       color: #e5e7eb;
@@ -65,10 +63,8 @@
 </header>
 
 <div class="max-w-4xl mx-auto mt-5">
-  <!-- Nagłówek / Tytuł -->
   <h1 class="text-2xl font-bold mb-5 text-center">Portfolio</h1>
 
-<!-- Sekcja Balansu -->
 <div class="bg-gray-800 p-5 rounded shadow mb-5">
   <h2 class="text-xl font-semibold mb-3">Your Balance</h2>
   <table id="coinsTable" class="w-full text-left">
@@ -79,13 +75,11 @@
       </tr>
     </thead>
     <tbody class="divide-y divide-gray-600">
-      <!-- Wiersze tabeli wstawimy przez JS -->
     </tbody>
   </table>
 </div>
 
 
-  <!-- Przyciski (Deposit/Withdraw) -->
   <div class="bg-gray-800 p-5 rounded shadow mb-5 flex items-center justify-around">
     <button
       id="depositBtn"
@@ -101,29 +95,23 @@
     </button>
   </div>
 
-  <!-- Sekcja Transakcji -->
   <div class="bg-gray-800 p-5 rounded shadow">
     <h2 class="text-xl font-semibold mb-3">Transaction History</h2>
     <ul id="transactionsList" class="space-y-3">
-      <!-- Lista transakcji wstawiana dynamicznie przez JS -->
     </ul>
   </div>
 </div>
 
-<!-- Skrypt główny (np. user_profile.js) -->
 <script src="/static/scripts/user_profile.js"></script>
 
-<!-- Poniżej wstawiamy kod do pobierania i wyświetlania balansu + transakcji -->
 <script>
   document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Pobieramy i wyświetlamy transakcje
     try {
       const response = await fetch('http://localhost:8000/all_transaction');
       const transactions = await response.json();
 
       const transactionsList = document.getElementById('transactionsList');
       transactionsList.innerHTML = transactions.map(tx => {
-        // Konwertujemy timestamp do obiektu Date
         const dateObj = new Date(tx.timestamp);
 
         const year = dateObj.getFullYear();
@@ -154,7 +142,6 @@
       console.error('Error fetching transactions:', error);
     }
 
-    // 2. Pobieramy i wyświetlamy coiny (saldo)
     try {
       const coinsResponse = await fetch('http://localhost:8000/coins');
       if (!coinsResponse.ok) {
@@ -163,8 +150,6 @@
       const coins = await coinsResponse.json();
 
       const userBalance = document.getElementById('userBalance');
-      // Tu decydujesz, jak ma wyglądać formatowanie.
-      // Przykład: "USD: 4000, BTC: 0.0101, ETH: 0.32639"
       userBalance.innerHTML = coins
         .map(coin => `${coin.name.toUpperCase()}: ${coin.amount}`)
         .join(', ');

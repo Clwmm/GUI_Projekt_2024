@@ -46,7 +46,6 @@ async function fetchUserBalance() {
   }
 }
 
-// 2. Fetch and display transaction history:
 async function fetchTransactions() {
   try {
     const response = await fetch('http://localhost:8000/all_transaction');
@@ -65,7 +64,6 @@ async function fetchTransactions() {
   }
 }
 
-// 3. Deposit
 async function deposit() {
   try {
     const amount = prompt('Enter deposit amount:');
@@ -81,7 +79,6 @@ async function deposit() {
     }
     alert('Deposit successful!');
 
-    // After the deposit, refresh balance and transactions
     await fetchUserBalance();
     await fetchTransactions();
   } catch (error) {
@@ -89,7 +86,6 @@ async function deposit() {
   }
 }
 
-// 4. Withdraw
 async function withdraw() {
   try {
     const amountInput = prompt('Enter withdrawal amount:');
@@ -117,12 +113,10 @@ async function withdraw() {
   }
 }
 
-// 5. Event listeners for buttons
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('depositBtn').addEventListener('click', deposit);
   document.getElementById('withdrawBtn').addEventListener('click', withdraw);
 
-  // On page load, fetch balance and transactions
   fetchUserBalance();
   fetchTransactions();
 });
