@@ -27,7 +27,7 @@
     }
 
     .logo-img {
-        cursor: pointer;
+      cursor: pointer;
     }
 
     .logo-img:hover {
@@ -38,60 +38,140 @@
 <body>
 <header class="bg-gray-800 shadow-lg h-24 flex items-center justify-between px-8 border-b border-gray-700">
     <div class="text-3xl font-semibold text-white">
-        <img src="{{ url_for('static', path='/svg/logo.svg') }}" class="logo-img w-48 h-48" alt="Logo" onclick="window.location.href='/';">
+        <img src="{{ url_for('static', path='/svg/logo.svg') }}" class="logo-img w-48 h-48" alt="Logo" onclick="window.location.href='/'">
     </div>
-
-  <div class="flex items-center gap-4">
-      <img class="profile-img hover:opacity-80" onclick="window.location.href='/profile';"
+    <div class="flex items-center gap-4">
+        <img
+          class="profile-img hover:opacity-80"
+          onclick="window.location.href='/profile'"
           src="{{ user['picture'] if user['picture'] else url_for('static', path='svg/avatar.svg') }}"
-          alt="Profile">
+          alt="Profile"
+        />
+        <button
+          id="logout_button"
+          class="text-gray-400 hover:text-white p-2"
+          onclick="window.location.href='/logout'"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H3"
+            />
+          </svg>
+        </button>
+    </div>
+</header>
+
+<div class="max-w-4xl mx-auto mt-5">
+  <!-- Nagłówek / Tytuł -->
+  <h1 class="text-2xl font-bold mb-5 text-center">Portfolio</h1>
+
+<!-- Sekcja Balansu -->
+<div class="bg-gray-800 p-5 rounded shadow mb-5">
+  <h2 class="text-xl font-semibold mb-3">Your Balance</h2>
+  <table id="coinsTable" class="w-full text-left">
+    <thead>
+      <tr>
+        <th class="pb-2 text-gray-400 uppercase">Coin</th>
+        <th class="pb-2 text-gray-400 uppercase">Amount</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-600">
+      <!-- Wiersze tabeli wstawimy przez JS -->
+    </tbody>
+  </table>
+</div>
 
 
-    <button id="logout_button" class="text-gray-400 hover:text-white p-2" onclick="window.location.href='/logout';">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H3"/>
-      </svg>
+  <!-- Przyciski (Deposit/Withdraw) -->
+  <div class="bg-gray-800 p-5 rounded shadow mb-5 flex items-center justify-around">
+    <button
+      id="depositBtn"
+      class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+    >
+      Deposit
+    </button>
+    <button
+      id="withdrawBtn"
+      class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+    >
+      Withdraw
     </button>
   </div>
-</header>
-  <div class="max-w-4xl mx-auto mt-5">
-    <!-- Nagłówek / Tytuł -->
-    <h1 class="text-2xl font-bold mb-5 text-center">Portfolio</h1>
 
-    <!-- Sekcja Balansu -->
-    <div class="bg-gray-800 p-5 rounded shadow mb-5">
-      <h2 class="text-xl font-semibold mb-3">Your Balance</h2>
-      <p id="userBalance" class="text-2xl font-bold text-green-400">
-        <!-- Balans zostanie wstawiony przez JS -->
-      </p>
-    </div>
-
-    <!-- Przyciski (Deposit/Withdraw) -->
-    <div class="bg-gray-800 p-5 rounded shadow mb-5 flex items-center justify-around">
-      <button
-        id="depositBtn"
-        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-      >
-        Deposit
-      </button>
-      <button
-        id="withdrawBtn"
-        class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-      >
-        Withdraw
-      </button>
-    </div>
-
-    <!-- Sekcja Transakcji -->
-    <div class="bg-gray-800 p-5 rounded shadow">
-      <h2 class="text-xl font-semibold mb-3">Transaction History</h2>
-      <ul id="transactionsList" class="space-y-3">
-        <!-- Lista transakcji wstawiana dynamicznie przez JS -->
-      </ul>
-    </div>
+  <!-- Sekcja Transakcji -->
+  <div class="bg-gray-800 p-5 rounded shadow">
+    <h2 class="text-xl font-semibold mb-3">Transaction History</h2>
+    <ul id="transactionsList" class="space-y-3">
+      <!-- Lista transakcji wstawiana dynamicznie przez JS -->
+    </ul>
   </div>
+</div>
 
-  <!-- Skrypt -->
-  <script src="/static/scripts/user_profile.js"></script>
+<!-- Skrypt główny (np. user_profile.js) -->
+<script src="/static/scripts/user_profile.js"></script>
+
+<!-- Poniżej wstawiamy kod do pobierania i wyświetlania balansu + transakcji -->
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Pobieramy i wyświetlamy transakcje
+    try {
+      const response = await fetch('http://localhost:8000/all_transaction');
+      const transactions = await response.json();
+
+      const transactionsList = document.getElementById('transactionsList');
+      transactionsList.innerHTML = transactions.map(tx => {
+        // Konwertujemy timestamp do obiektu Date
+        const dateObj = new Date(tx.timestamp);
+
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const hours = String(dateObj.getHours()).padStart(2, '0');
+        const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+        const seconds = String(dateObj.getSeconds()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+        return `
+          <li class="bg-gray-700 p-4 rounded shadow transition duration-200 hover:bg-gray-600">
+            <h3 class="font-bold text-gray-200 mb-1">
+              ${tx.currency_from} → ${tx.currency_to}
+            </h3>
+            <p class="text-sm text-gray-300">
+              <span class="font-semibold">Amount:</span>
+              ${Math.abs(tx.amount_from)} → ${Math.abs(tx.amount_to)}
+            </p>
+            <p class="text-sm text-gray-400 mt-1">
+              <span class="font-semibold">Timestamp:</span>
+              ${formattedDate}
+            </p>
+          </li>
+        `;
+      }).join('');
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+    }
+
+    // 2. Pobieramy i wyświetlamy coiny (saldo)
+    try {
+      const coinsResponse = await fetch('http://localhost:8000/coins');
+      if (!coinsResponse.ok) {
+        throw new Error('Błąd podczas pobierania coinów: ' + coinsResponse.statusText);
+      }
+      const coins = await coinsResponse.json();
+
+      const userBalance = document.getElementById('userBalance');
+      // Tu decydujesz, jak ma wyglądać formatowanie.
+      // Przykład: "USD: 4000, BTC: 0.0101, ETH: 0.32639"
+      userBalance.innerHTML = coins
+        .map(coin => `${coin.name.toUpperCase()}: ${coin.amount}`)
+        .join(', ');
+    } catch (error) {
+      console.error('Error fetching coins:', error);
+    }
+  });
+</script>
 </body>
 </html>
