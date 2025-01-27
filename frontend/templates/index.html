@@ -142,17 +142,25 @@
     .profile-img:hover {
       opacity: 0.8;
     }
+
+    .logo-img {
+        cursor: pointer;
+    }
+
+    .logo-img:hover {
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
 <div id="notificationContainer"></div>
 <header class="bg-gray-800 shadow-lg h-24 flex items-center justify-between px-8 border-b border-gray-700">
     <div class="text-3xl font-semibold text-white">
-        <img src="{{ url_for('static', path='/svg/logo.svg') }}" class="w-48 h-48" alt="Logo">
+        <img src="{{ url_for('static', path='/svg/logo.svg') }}" class="logo-img w-48 h-48" alt="Logo" onclick="window.location.href='/';">
     </div>
 
   <div class="flex items-center gap-4">
-      <img class="profile-img hover:opacity-80"
+      <img class="profile-img hover:opacity-80" onclick="window.location.href='/profile';"
           src="{{ user['picture'] if user['picture'] else url_for('static', path='svg/avatar.svg') }}"
           alt="Profile">
 

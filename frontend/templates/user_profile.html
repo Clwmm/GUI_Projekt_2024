@@ -12,10 +12,49 @@
       color: #e5e7eb;
       font-family: 'Inter', sans-serif;
     }
+
+    .profile-img {
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      object-fit: cover;
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
+
+    .profile-img:hover {
+      opacity: 0.8;
+    }
+
+    .logo-img {
+        cursor: pointer;
+    }
+
+    .logo-img:hover {
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
-  <div class="max-w-4xl mx-auto mt-10">
+<header class="bg-gray-800 shadow-lg h-24 flex items-center justify-between px-8 border-b border-gray-700">
+    <div class="text-3xl font-semibold text-white">
+        <img src="{{ url_for('static', path='/svg/logo.svg') }}" class="logo-img w-48 h-48" alt="Logo" onclick="window.location.href='/';">
+    </div>
+
+  <div class="flex items-center gap-4">
+      <img class="profile-img hover:opacity-80" onclick="window.location.href='/profile';"
+          src="{{ user['picture'] if user['picture'] else url_for('static', path='svg/avatar.svg') }}"
+          alt="Profile">
+
+
+    <button id="logout_button" class="text-gray-400 hover:text-white p-2" onclick="window.location.href='/logout';">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H3"/>
+      </svg>
+    </button>
+  </div>
+</header>
+  <div class="max-w-4xl mx-auto mt-5">
     <!-- Nagłówek / Tytuł -->
     <h1 class="text-2xl font-bold mb-5 text-center">Portfolio</h1>
 
