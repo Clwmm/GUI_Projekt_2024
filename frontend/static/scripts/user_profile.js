@@ -1,16 +1,18 @@
-document.addEventListener('DOMContentLoaded', async () => {
+async function fetchCoins() {
+  const response = await fetch('http://localhost:8000/coins');
+  if (!response.ok) {
+    throw new Error('Failed to fetch coins');
+  }
+  return await response.json();
+}
+
+async function fetchUserBalance() {
   try {
-    const coinsResponse = await fetch('http://localhost:8000/coins');
-    if (!coinsResponse.ok) {
-      throw new Error('Błąd podczas pobierania coinów: ' + coinsResponse.statusText);
-    }
-
-    const coins = await coinsResponse.json();
-    console.log('Otrzymane coiny:', coins); // Debug
-
+    const coins = await fetchCoins();
     const tableBody = document.querySelector('#coinsTable tbody');
+
     if (!tableBody) {
-      console.error('Nie znaleziono #coinsTable tbody w HTML!');
+      console.error('HTML error');
       return;
     }
 
@@ -40,9 +42,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       tableBody.appendChild(tr);
     });
   } catch (error) {
-    console.error('Error fetching coins:', error);
+    console.error('Error fetching balance:', error);
   }
-});
+}
 
 // 2. Fetch and display transaction history:
 async function fetchTransactions() {
